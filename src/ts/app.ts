@@ -1,5 +1,5 @@
-import {Parser} from './parser/Parser';
-import {StorageUtils} from './storage/StorageUtils';
+import { Parser } from './parser/Parser';
+import { StorageUtils } from './storage/StorageUtils';
 
 const PARSER_APP_KEY = '_valxy_666999_ParserApp';
 
@@ -10,23 +10,29 @@ export class App {
 
     constructor() {
         console.log('constructor start');
-        this.textArea = <HTMLTextAreaElement> document.getElementById('text2Parse');
-        this.button = <HTMLButtonElement> document.getElementById('appButton');
-        this.textArea.value = this.readFromStorage();
+        this.textArea = <HTMLTextAreaElement>document.getElementById('text2Parse');
+        this.button = <HTMLButtonElement>document.getElementById('appButton');
+        if (this.textArea && this.textArea.value) {
+            this.textArea.value = this.readFromStorage();
+        }
         this.addListenerToTextArea();
         this.addListenerToButton();
     }
 
     private addListenerToTextArea() {
-        this.textArea.addEventListener('input', () => {
-            this.saveToStorage(this.textArea.value);
-        });
+        if (this.textArea) {
+            this.textArea.addEventListener('input', () => {
+                this.saveToStorage(this.textArea.value);
+            });
+        }
     }
 
     private addListenerToButton() {
-        this.button.addEventListener('click', () => {
-            this.parseText(this.textArea.value);
-        });
+        if (this.button) {
+            this.button.addEventListener('click', () => {
+                this.parseText(this.textArea.value);
+            });
+        }
     }
 
     private parseText(text: string): void {

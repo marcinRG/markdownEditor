@@ -8,3 +8,10 @@ describe("HelloComponent", () => {
         expect(true).toBe(true);
     });
 });
+
+describe('My test', ()=>{
+    it('should be ok', ()=> {
+      const tr = true;
+      expect(tr).toBeTruthy();
+    });
+})

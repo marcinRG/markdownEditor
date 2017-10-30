@@ -34,6 +34,23 @@ gulp.task('lint-sass', ['clean-styles'], function () {
         .pipe(sassLint.failOnError())
 });
 
+gulp.task('test-run', function (done) {
+    var Server = require('karma').Server;
+    new Server({
+        configFile: __dirname + '/karma.conf.js'
+    }, testCompleted).start();
+
+    function testCompleted(results) {
+        msg('Testy zakończone');
+        if (results === 1) {
+            done('Zakończone bledem');
+        }
+        else {
+            done();
+        }
+    }
+});
+
 gulp.task('sass-compile', ['lint-sass'], function () {
     msg('Kompilacja plików scss -> css');
     return gulp.src(settings.app.scssFile)
