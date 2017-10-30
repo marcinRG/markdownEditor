@@ -1,15 +1,15 @@
-import { INode } from "./interfaces/INode";
-import { NodeType } from "./enums/NodeType";
-import { HTMLTags } from "./enums/HTMLTags";
+import { INode } from './interfaces/INode';
+import { NodeType } from './enums/NodeType';
+import { HTMLTags } from './enums/HTMLTags';
 
 export class TextNode implements INode {
-    nodeType: NodeType = NodeType.TextNode;
-    nodeName?: HTMLTags = null;
-    textContent: string;
+    public nodeType: NodeType = NodeType.TextNode;
+    public nodeName?: HTMLTags = null;
+    private textContent: string;
     constructor(text: string) {
         this.textContent = text;
     }
-    toString(): string {
+    public toString(): string {
         return this.textContent;
     }
 }

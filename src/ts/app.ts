@@ -10,10 +10,14 @@ export class App {
 
     constructor() {
         console.log('constructor start');
-        this.textArea = <HTMLTextAreaElement>document.getElementById('text2Parse');
-        this.button = <HTMLButtonElement>document.getElementById('appButton');
+        this.textArea = <HTMLTextAreaElement> document.getElementById('text2Parse');
+        this.button = <HTMLButtonElement> document.getElementById('appButton');
         if (this.textArea && this.textArea.value) {
-            this.textArea.value = this.readFromStorage();
+            const storedValue = this.readFromStorage();
+            if (storedValue) {
+                this.textArea.value = this.readFromStorage();
+            }
+
         }
         this.addListenerToTextArea();
         this.addListenerToButton();

@@ -19,9 +19,9 @@ export class StorageUtils {
             if (val) {
                 return val;
             }
-            return {};
+            return null;
         }
-        return {};
+        return null;
     }
 
     public static writeValue(key, val) {

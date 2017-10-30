@@ -51,7 +51,7 @@ gulp.task("ts-compile", ['code-check'], function () {
         .pipe(gulp.dest(settings.app.jsAppFolder));
 });
 
-gulp.task('browserify-compil', function () {
+gulp.task('browserify-compil', ['code-check'], function () {
     return browserify({
         entries: [settings.app.tsFile],
         debug: true
@@ -66,6 +66,10 @@ gulp.task('browserify-inject-js', ['browserify-compil'], function () {
         .pipe($.inject(gulp.src(settings.app.compiledJS, { read: false }), { relative: true }))
         .pipe(gulp.dest(settings.app.client));
 });
+
+gulp.task('run-dev', ['browserify-inject-js','inject-css','test-run'], function(){
+    serve(true);
+})
 
 gulp.task('help', $.taskListing);
 
@@ -84,6 +88,32 @@ gulp.task('inject-css', function () {
 gulp.task('ts-watcher', function () {
     gulp.watch(settings.app.allTSs, ['browserify-inject-js']);
 });
+
+function serve(isDev) {
+    var nodeOptions = {
+        script: settings.server.serverApp,
+        ext: 'js',
+        delay: 2500,
+        env: {
+            'PORT': settings.server.port,
+            'NODE_ENV': isDev ? 'dev' : 'build'
+        },
+        watch: settings.server.serverFiles
+    };
+    return $.nodemon(nodeOptions)
+        .on('start', function () {
+            msg('...start servera ...');
+        })
+        .on('restart', function () {
+            msg('...restart servera...');
+        })
+        .on('exit', function () {
+        })
+        .on('crash', function () {
+            msg('!!!Wystąpiły bęłdy');
+        });
+}
+
 
 //--functions
 function clean(path, done) {
