@@ -2,16 +2,9 @@ import {Parser} from '../../src/ts/parser/Parser';
 
 describe("HelloComponent", () => {
 
-    it("should say 'Hello world!'", () => {
-        console.log('Start');
+    it("should be defined'", () => {
+        console.log('Parser should be defined');
         let parser = new Parser();
-        expect(true).toBe(true);
+        expect(parser).toBeDefined();
     });
 });
-
-describe('My test', ()=>{
-    it('should be ok', ()=> {
-      const tr = true;
-      expect(tr).toBeTruthy();
-    });
-})

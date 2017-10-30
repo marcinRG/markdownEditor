@@ -1,6 +1,6 @@
-import { INode } from "./INode";
-import { NodeType } from "./NodeType";
-import { HTMLTags } from "./HTMLTags";
+import { INode } from "./interfaces/INode";
+import { NodeType } from "./enums/NodeType";
+import { HTMLTags } from "./enums/HTMLTags";
 
 export class TextNode implements INode {
     nodeType: NodeType = NodeType.TextNode;

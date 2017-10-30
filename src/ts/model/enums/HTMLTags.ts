@@ -8,4 +8,5 @@ export enum HTMLTags {
     B = 'b',
     UL = 'ul',
     LI = 'li',
+    DIV = 'div',
 }

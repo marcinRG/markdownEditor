@@ -4,7 +4,7 @@ var ts = require("gulp-typescript");
 var tsProject = ts.createProject("tsconfig.json");
 var browserify = require("browserify");
 var source = require('vinyl-source-stream');
-var $ = require('gulp-load-plugins')({lazy: true});
+var $ = require('gulp-load-plugins')({ lazy: true });
 var sassLint = require('gulp-sass-lint');
 var tsify = require('tsify');
 var del = require('del');
@@ -34,21 +34,8 @@ gulp.task('lint-sass', ['clean-styles'], function () {
         .pipe(sassLint.failOnError())
 });
 
-gulp.task('test-run', function (done) {
-    var Server = require('karma').Server;
-    new Server({
-        configFile: __dirname + '/karma.conf.js'
-    }, testCompleted).start();
-
-    function testCompleted(results) {
-        msg('Testy zakończone');
-        if (results === 1) {
-            done('Zakończone bledem');
-        }
-        else {
-            done();
-        }
-    }
+gulp.task('test-run', function(done){
+    runTests(done);
 });
 
 gulp.task('sass-compile', ['lint-sass'], function () {
@@ -76,7 +63,7 @@ gulp.task('browserify-compil', function () {
 
 gulp.task('browserify-inject-js', ['browserify-compil'], function () {
     return gulp.src(settings.app.index)
-        .pipe($.inject(gulp.src(settings.app.compiledJS, {read: false}), {relative: true}))
+        .pipe($.inject(gulp.src(settings.app.compiledJS, { read: false }), { relative: true }))
         .pipe(gulp.dest(settings.app.client));
 });
 
@@ -90,7 +77,7 @@ gulp.task('sass-watcher', function () {
 
 gulp.task('inject-css', function () {
     return gulp.src(settings.app.index)
-        .pipe($.inject(gulp.src(settings.app.cssFile, {read: false}), {relative: true}))
+        .pipe($.inject(gulp.src(settings.app.cssFile, { read: false }), { relative: true }))
         .pipe(gulp.dest(settings.app.client));
 });
 
@@ -108,4 +95,21 @@ function clean(path, done) {
 
 function msg(txt) {
     $.util.log($.util.colors.blue(txt));
+}
+
+function runTests(done) {
+    var Server = require('karma').Server;
+    new Server({
+        configFile: __dirname + '/karma.conf.js'
+    }, testCompleted).start();
+
+    function testCompleted(results) {
+        msg('Testy zakończone');
+        if (results === 1) {
+            done('Testy zakończone bledem');
+        }
+        else {
+            done();
+        }
+    }
 }
