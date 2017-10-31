@@ -9,7 +9,6 @@ export class App {
     private textArea: HTMLTextAreaElement;
 
     constructor() {
-        console.log('constructor start');
         this.textArea = <HTMLTextAreaElement> document.getElementById('text2Parse');
         this.button = <HTMLButtonElement> document.getElementById('appButton');
         if (this.textArea && this.textArea.value) {

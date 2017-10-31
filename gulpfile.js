@@ -34,7 +34,7 @@ gulp.task('lint-sass', ['clean-styles'], function () {
         .pipe(sassLint.failOnError())
 });
 
-gulp.task('test-run', function(done){
+gulp.task('test-run', function (done) {
     runTests(done);
 });
 
@@ -67,7 +67,7 @@ gulp.task('browserify-inject-js', ['browserify-compil'], function () {
         .pipe(gulp.dest(settings.app.client));
 });
 
-gulp.task('run-dev', ['browserify-inject-js','inject-css','test-run'], function(){
+gulp.task('run-dev', ['browserify-inject-js', 'inject-css', 'test-run'], function () {
     serve(true);
 })
 
@@ -129,17 +129,10 @@ function msg(txt) {
 
 function runTests(done) {
     var Server = require('karma').Server;
-    new Server({
-        configFile: __dirname + '/karma.conf.js'
-    }, testCompleted).start();
-
-    function testCompleted(results) {
-        msg('Testy zakończone');
-        if (results === 1) {
-            done('Testy zakończone bledem');
-        }
-        else {
-            done();
-        }
-    }
+    var karmaServer = new Server({
+        configFile: __dirname + '/karma.conf.js',
+    }, function (exitCode) {
+        done();
+        process.exit(exitCode);
+    }).start();
 }
