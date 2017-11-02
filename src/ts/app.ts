@@ -1,4 +1,3 @@
-import { Parser } from './parser/Parser';
 import { StorageUtils } from './storage/StorageUtils';
 
 const PARSER_APP_KEY = '_valxy_666999_ParserApp';
@@ -39,7 +38,8 @@ export class App {
     }
 
     private parseText(text: string): void {
-        Parser.parseText(text);
+        console.log(text);
+        //Parser.parseText(text);
     }
 
     private saveToStorage(text: string): void {

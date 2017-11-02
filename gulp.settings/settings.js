@@ -1,5 +1,5 @@
 var devFolder = './src/';
-
+var testFolder ='./test/';
 var jsFolder = devFolder + 'js/';
 var tsFolder = devFolder + 'ts/';
 var sassFolder = devFolder + 'scss/';
@@ -13,6 +13,7 @@ var paths = {
     index: devFolder + 'index.html',
     allJs: ['./*.js', serverFolder + '**/*.js', jsFolder + '**/*.js'],
     allTSs: [tsFolder + '**/*.ts'],
+    allTSandTest:  [tsFolder + '**/*.ts', testFolder + '**/*.ts'],
     jsAppFolder: jsFolder,
     tsFile: tsFolder + 'app.ts',
     jsFile: jsFolder + 'app.js',

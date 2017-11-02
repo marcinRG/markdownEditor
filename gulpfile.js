@@ -89,6 +89,10 @@ gulp.task('ts-watcher', function () {
     gulp.watch(settings.app.allTSs, ['browserify-inject-js']);
 });
 
+gulp.task('ts-watcher-test', function () {
+    gulp.watch(settings.app.allTSandTest, ['test-run']);
+});
+
 function serve(isDev) {
     var nodeOptions = {
         script: settings.server.serverApp,
