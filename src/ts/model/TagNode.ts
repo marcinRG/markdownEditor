@@ -1,28 +1,46 @@
-import { INode } from './interfaces/INode';
-import { NodeType } from './enums/NodeType';
-import { HTMLTags } from './enums/HTMLTags';
-import { Collection } from './Collection';
-import { TextNode } from './TextNode';
+import {INode} from './interfaces/INode';
+import {NodeType} from './enums/NodeType';
+import {HTMLTags} from './enums/HTMLTags';
+import {Collection} from './Collection';
+import {Property} from './Property';
+import {TextNode} from './TextNode';
+import {IStringable} from './interfaces/IStringable';
 
 export class TagNode implements INode {
-    public nodeType: NodeType = NodeType.TagNode;
-    public nodeName: HTMLTags;
-    public nodeCollection: Collection<INode>;
+
+    public nodeType: NodeType;
+    public nodeName?: HTMLTags;
+    private nodes: Collection<IStringable>;
+    private properties: Collection<Property>;
 
     constructor(nodeName: HTMLTags, text?: string) {
         this.nodeName = nodeName;
-        this.nodeCollection = new Collection<INode>();
+        this.nodeType = NodeType.TagNode;
+        this.nodes = new Collection<INode>();
         if (text) {
             const textNode = new TextNode(text);
-            this.nodeCollection.add(textNode);
+            this.addNode(textNode);
         }
+        this.properties = new Collection<Property>();
     }
 
-    public addNode(node: INode) {
-        this.nodeCollection.add(node);
+    public addNode(node: IStringable) {
+        this.nodes.add(node);
+    }
+
+    clearNodes() {
+        this.nodes.clear();
+    }
+
+    addProperty(property: Property) {
+        this.properties.add(property);
+    }
+
+    clearProperties() {
+        this.properties.clear();
     }
 
     public toString(): string {
-        return `<${this.nodeName}>${this.nodeCollection.toString()}</${this.nodeName}>`;
+        return `<${this.nodeName}${this.properties.toString()}>${this.nodes.toString()}</${this.nodeName}>`;
     }
 }

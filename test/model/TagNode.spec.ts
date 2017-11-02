@@ -1,6 +1,6 @@
-import { TextNode } from '../../src/ts/model/TextNode';
-import { TagNode } from '../../src/ts/model/TagNode';
 import { HTMLTags } from '../../src/ts/model/enums/HTMLTags';
+import {TagNode} from '../../src/ts/model/TagNode';
+
 
 describe('TagNode tests', () => {
     it('should exist & method toString should return value', () => {

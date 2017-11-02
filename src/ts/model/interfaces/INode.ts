@@ -1,8 +1,9 @@
 import {IStringable} from './IStringable';
-import {NodeType} from '../enums/NodeType';
-import {HTMLTags} from '../enums/HTMLTags';
+import {INodeInfo} from './INodeInfo';
 
-export interface INode extends IStringable {
-    nodeType: NodeType;
-    nodeName?: HTMLTags;
+export interface INode extends IStringable,INodeInfo {
+    addNode(node:IStringable);
+    clearNodes();
+    addProperty(property:IStringable);
+    clearProperties();
 }
