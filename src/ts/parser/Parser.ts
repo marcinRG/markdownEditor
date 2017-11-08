@@ -9,42 +9,32 @@ const bigRegExp = /((#{1,6})\s(.*)(?:\n|$))|(\*\s(.*?)(?:\n|$))|(\*\*(.*)\*\*)|(
 export class Parser {
     public static parseText(text: string, parentNode: INode): void {
         let tempStr: string = text;
-        console.log(tempStr);
-        console.log(parentNode.toString());
         if (tempStr && (tempStr.length > 0)) {
 
             const result: RegExpMatchArray = tempStr.match(bigRegExp);
             if (isText(result)) {
-                tempStr = processText(tempStr, result, parentNode);
-                Parser.parseText(tempStr, parentNode);
+                processText(tempStr, result, parentNode);
             }
             if (isTag(result)) {
-                processTag(result, parentNode);
+                processTag(tempStr, result, parentNode);
             }
         }
     }
 }
 
-const processText = (text: string, result: RegExpMatchArray, parentNode: INode): string => {
+const processText = (text: string, result: RegExpMatchArray, parentNode: INode) => {
     const index = (result && result.index) ? result.index : text.length;
     parentNode.addNode(new TextNode(text.substring(0, index)));
-    return text.substring(index, text.length);
+    const newText = text.substring(index, text.length);
+    Parser.parseText(newText, parentNode);
 };
 
-const processTag = (result: RegExpMatchArray, parentNode: INode) => {
+const processTag = (text: string, result: RegExpMatchArray, parentNode: INode) => {
     const obj = findTag(result);
     const newNode = new TagNode(obj.tag);
     parentNode.addNode(newNode);
-
-    if (result) {
-        if (result.length) {
-            console.log(result.length);
-            for (const elem of result) {
-                console.log(elem);
-            }
-        }
-    }
-    console.log('tag');
+    Parser.parseText(obj.text, newNode);
+    Parser.parseText(text.substring(obj.matchedText.length,text.length),parentNode);
 };
 
 const isText = (regExpMatch: RegExpMatchArray): boolean => {
@@ -56,26 +46,67 @@ const isTag = (regExpMatch: RegExpMatchArray): boolean => {
 };
 
 const findTag = (result: RegExpMatchArray): ITagTextPair => {
-    if (result && result.length) {
-        if (result[1]) {
-            console.log('result [1]:' + result[1]);
-            return {
-                tag: findHeaderSize(result[2]),
-                text: result[3],
-            };
-        }
+    if (result && result.length && result[0]) {
+        printResultTable(result);
+        return findHeader(result);
     }
 };
 
+const printResultTable = (result: RegExpMatchArray) => {
+    console.log('Result array:----------------------------------');
+
+    for (const elem of result) {
+        console.log(elem);
+    }
+    console.log('----------------------------------');
+
+}
+
+
 const findHeader = (result: RegExpMatchArray): ITagTextPair => {
     if (result[1]) {
-        console.log('result [1]:' + result[1]);
         return {
+            matchedText: result[1],
             tag: findHeaderSize(result[2]),
             text: result[3],
         };
     }
+    return findBold(result);
 };
+
+const findBold = (result: RegExpMatchArray): ITagTextPair => {
+    if (result[6]) {
+        return {
+            matchedText: result[6],
+            tag: HTMLTags.B,
+            text: result[7],
+        };
+    }
+    return findCursive(result);
+};
+
+const findCursive = (result: RegExpMatchArray): ITagTextPair => {
+    if (result[8]) {
+        return {
+            matchedText: result[8],
+            tag: HTMLTags.I,
+            text: result[9],
+        };
+    }
+    return findStrike(result);
+};
+
+const findStrike = (result: RegExpMatchArray): ITagTextPair => {
+    if (result[10]) {
+        return {
+            matchedText: result[10],
+            tag: HTMLTags.DEL,
+            text: result[11],
+        };
+    }
+};
+
+
 
 const findHeaderSize = (text: string) => {
     if (text && text.length) {
@@ -93,6 +124,8 @@ const findHeaderSize = (text: string) => {
                 return HTMLTags.H5;
             case 6:
                 return HTMLTags.H6;
+            default:
+                return null;
         }
     }
     return null;

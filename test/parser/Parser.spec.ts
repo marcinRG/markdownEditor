@@ -5,12 +5,95 @@ import { HTMLTags } from '../../src/ts/model/enums/HTMLTags';
 
 describe('Parser tests', () => {
 
-    it('', () => {
+    xit('should parse text to html tags', () => {
         const textToParse = `Jakis tekst # Weekly JavaScript Challenge #9`;
         const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H1}>` +
             `Weekly JavaScript Challenge #9</${HTMLTags.H1}></${HTMLTags.DIV}>`;
+        console.log(`expected Result: ${expectedResult}`);
         const parentNode: INode = new TagNode(HTMLTags.DIV);
         Parser.parseText(textToParse, parentNode);
         expect(parentNode.toString()).toBe(expectedResult);
     });
+
+    xit('should parse text to html tags', () => {
+        const textToParse = `## Weekly JavaScript Challenge #9`;
+        const expectedResult = `<${HTMLTags.DIV}><${HTMLTags.H2}>` +
+            `Weekly JavaScript Challenge #9</${HTMLTags.H2}></${HTMLTags.DIV}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const parentNode: INode = new TagNode(HTMLTags.DIV);
+        Parser.parseText(textToParse, parentNode);
+        expect(parentNode.toString()).toBe(expectedResult);
+    });
+
+    xit('should parse text to html tags', () => {
+        const textToParse = `Jakis tekst ### Weekly JavaScript Challenge #9`;
+        const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H3}>` +
+            `Weekly JavaScript Challenge #9</${HTMLTags.H3}></${HTMLTags.DIV}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const parentNode: INode = new TagNode(HTMLTags.DIV);
+        Parser.parseText(textToParse, parentNode);
+        expect(parentNode.toString()).toBe(expectedResult);
+    });
+
+    xit('should parse text to html tags', () => {
+        const textToParse = `Jakis tekst #### Weekly JavaScript Challenge #9`;
+        const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H4}>` +
+            `Weekly JavaScript Challenge #9</${HTMLTags.H4}></${HTMLTags.DIV}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const parentNode: INode = new TagNode(HTMLTags.DIV);
+        Parser.parseText(textToParse, parentNode);
+        expect(parentNode.toString()).toBe(expectedResult);
+    });
+
+    xit('should parse text to html tags', () => {
+        const textToParse = `Jakis tekst ##### Weekly JavaScript Challenge #9`;
+        const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H5}>` +
+            `Weekly JavaScript Challenge #9</${HTMLTags.H5}></${HTMLTags.DIV}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const parentNode: INode = new TagNode(HTMLTags.DIV);
+        Parser.parseText(textToParse, parentNode);
+        expect(parentNode.toString()).toBe(expectedResult);
+    });
+
+    xit('should parse text to html tags', () => {
+        const textToParse = `Jakis tekst ###### Weekly JavaScript Challenge #9`;
+        const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H6}>` +
+            `Weekly JavaScript Challenge #9</${HTMLTags.H6}></${HTMLTags.DIV}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const parentNode: INode = new TagNode(HTMLTags.DIV);
+        Parser.parseText(textToParse, parentNode);
+        expect(parentNode.toString()).toBe(expectedResult);
+    });
+
+    xit('should parse text to html tags', () => {
+        const textToParse = `Jakis tekst ####### Weekly JavaScript Challenge #9`;
+        const expectedResult = `<${HTMLTags.DIV}>Jakis tekst #<${HTMLTags.H6}>` +
+            `Weekly JavaScript Challenge #9</${HTMLTags.H6}></${HTMLTags.DIV}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const parentNode: INode = new TagNode(HTMLTags.DIV);
+        Parser.parseText(textToParse, parentNode);
+        expect(parentNode.toString()).toBe(expectedResult);
+    });
+
+    xit('should parse text to html tags', () => {
+        const textToParse = `Jakis tekst # Weekly **JavaScript** Challenge #9`;
+        const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H1}>` +
+            `Weekly <${HTMLTags.B}>JavaScript</${HTMLTags.B}> Challenge #9</${HTMLTags.H1}></${HTMLTags.DIV}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const parentNode: INode = new TagNode(HTMLTags.DIV);
+        Parser.parseText(textToParse, parentNode);
+        expect(parentNode.toString()).toBe(expectedResult);
+    });
+
+    it('should parse text to html tags', () => {
+        const textToParse = `Jakis tekst # Weekly __JavaScript__ Challenge #9`;
+        const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H1}>` +
+            `Weekly <${HTMLTags.I}>JavaScript</${HTMLTags.I}> Challenge #9</${HTMLTags.H1}></${HTMLTags.DIV}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const parentNode: INode = new TagNode(HTMLTags.DIV);
+        Parser.parseText(textToParse, parentNode);
+        expect(parentNode.toString()).toBe(expectedResult);
+    });
+
+
 });
