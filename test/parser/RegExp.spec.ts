@@ -107,19 +107,19 @@ describe('Header element match test', () => {
 
 });
 
-describe('link element match test', ()=>{
-    const  linkRegExp = /\((.*)\)\[((?:https?\:\/\/)?.*)\]/g;
-    const  testLinkText = `  (jakiś tekst)[http://www.onet.pl]`;
-    const  testLinkText2 = ` (artykuł na wyborcza.pl)[http://wyborcza.pl/7,75400,22586094,halloween-u-fizykow-dzien-ciemnej-materii.html] `;
-    const  testLinkText4 = ` (Rotating Cube)[desandro.github.io/3dtransforms/examples/perspective-03]`;
-    const  testLinkText5 = ` (マクロスMACROSS 82-99)[https://www.youtube.com/watch?v=idipMrfAZHk]`;
+describe('link element match test', () => {
+    const linkRegExp = /\((.*)\)\[((?:https?\:\/\/)?.*)]/g;
+    const testLinkText = `  (jakiś tekst)[http://www.onet.pl]`;
+    const testLinkText2 = ` (artykuł na wyborcza.pl)[http://wyborcza.pl/7,75400,22586094,` +
+        `halloween-u-fizykow-dzien-ciemnej-materii.html] `;
+    const testLinkText4 = ` (Rotating Cube)[desandro.github.io/3dtransforms/examples/perspective-03]`;
+    const testLinkText5 = ` (マクロスMACROSS 82-99)[https://www.youtube.com/watch?v=idipMrfAZHk]`;
 
     beforeEach(() => {
         linkRegExp.lastIndex = 0;
     });
 
-
-    it('should match', ()=>{
+    it('should match', () => {
         console.log('should find link and descption 1');
         const match = linkRegExp.exec(testLinkText2);
         expect(match[1]).toBe('artykuł na wyborcza.pl');
@@ -127,26 +127,24 @@ describe('link element match test', ()=>{
 
     });
 
-    it('should match', ()=>{
+    it('should match', () => {
         console.log('should find link and descption 2');
         const match = linkRegExp.exec(testLinkText);
         expect(match[1]).toBe('jakiś tekst');
         expect(match[2]).toBe('http://www.onet.pl');
     });
 
-    it('should match', ()=>{
+    it('should match', () => {
         console.log('should find link and descption 3');
         const match = linkRegExp.exec(testLinkText4);
         expect(match[1]).toBe('Rotating Cube');
         expect(match[2]).toBe('desandro.github.io/3dtransforms/examples/perspective-03');
     });
 
-    it('should match', ()=>{
+    it('should match', () => {
         console.log('should find link and descption 4');
         const match = linkRegExp.exec(testLinkText5);
         expect(match[1]).toBe('マクロスMACROSS 82-99');
         expect(match[2]).toBe('https://www.youtube.com/watch?v=idipMrfAZHk');
     });
-
-
 });

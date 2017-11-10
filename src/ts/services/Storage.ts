@@ -1,6 +1,4 @@
-'use strict';
-
-export class StorageUtils {
+export class Storage {
     public static storageAvailable(type) {
         try {
             const storage = window[type];

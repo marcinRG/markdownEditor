@@ -1,4 +1,4 @@
-import { StorageUtils } from './storage/StorageUtils';
+import {Storage} from './services/Storage';
 
 const PARSER_APP_KEY = '_valxy_666999_ParserApp';
 
@@ -43,11 +43,11 @@ export class App {
     }
 
     private saveToStorage(text: string): void {
-        StorageUtils.writeValue(PARSER_APP_KEY, text);
+        Storage.writeValue(PARSER_APP_KEY, text);
     }
 
     private readFromStorage(): string {
-        return StorageUtils.readValue(PARSER_APP_KEY).toString();
+        return Storage.readValue(PARSER_APP_KEY).toString();
     }
 }
 

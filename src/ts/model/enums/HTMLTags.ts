@@ -5,6 +5,7 @@ export enum HTMLTags {
     H4 = 'h4',
     H5 = 'h5',
     H6 = 'h6',
+    A = 'a',
     B = 'strong',
     UL = 'ul',
     LI = 'li',

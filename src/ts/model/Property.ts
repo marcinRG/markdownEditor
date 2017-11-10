@@ -1,11 +1,10 @@
 import {IStringable} from './interfaces/IStringable';
 
 export class Property implements IStringable {
-    name: string;
-    value: string;
+    constructor(private name: string, private value: string) {
+    }
 
     public toString() {
         return ` ${this.name}="${this.value}"`;
     }
-
 }

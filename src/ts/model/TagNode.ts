@@ -28,15 +28,15 @@ export class TagNode implements INode {
         this.nodes.add(node);
     }
 
-    clearNodes() {
+    public clearNodes() {
         this.nodes.clear();
     }
 
-    addProperty(property: Property) {
+    public addProperty(property: Property) {
         this.properties.add(property);
     }
 
-    clearProperties() {
+    public clearProperties() {
         this.properties.clear();
     }
 
