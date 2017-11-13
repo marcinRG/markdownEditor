@@ -3,11 +3,12 @@ import {TextNode} from '../model/TextNode';
 import {TagUtilities} from '../services/TagUtilities';
 
 const regExpStr = '((#{1,6})\\s(.*)(?:\\n|$))' + '|' + //header
-    '(\\*\\s(.*?)(?:\\n|$))' + '|' + //li
-    '(\\*\\*(.*)\\*\\*)' + '|' + //bold
-    '(__(.*)__)' + '|' +  //em
-    '(--(.*)--)' + '|' +  //del
-    '(\\((.*)\\)\\[((?:https?\\:\\/\\/)?.*)])';  //link*/
+    //'(\\s\\*\\s(.*?)(?:\\n|$))' + '|' + //li
+    //'(\\*\\*(.*)\\*\\*)' + '|' + //bold
+    //'(__(.*)__)' + '|' +  //em
+    //'(--(.*)--)' + '|' +  //del
+    //'(\\((.*)\\)\\[((?:https?\\:\\/\\/)?.*)])' + '|' + //link
+    '((?:(\\s+)\\*\\s*.*?\\n|$)+)';  //link*/
 const bigRegExp = new RegExp(regExpStr, 'i');
 
 export class Parser {

@@ -17,7 +17,7 @@ export class TagUtilities {
 
     public static findTag(result: RegExpMatchArray): IMatchResults {
         if (result && result.length && result[0]) {
-            //printResultTable(result);
+            printResultTable(result);
             return findHeader(result);
         }
         return null;
@@ -78,7 +78,26 @@ const findLink = (result: RegExpMatchArray): IMatchResults => {
             link: result[14],
         };
     }
+    return findListElement(result);
 };
+
+const findList = (result: RegExpMatchArray): IMatchResults => {
+    if (result[14]) {
+
+    }
+    return null;
+}
+
+const findListElement = (result: RegExpMatchArray): IMatchResults => {
+    if (result[4]) {
+        return {
+            matchedText: result[4],
+            tag: HTMLTags.LI,
+            innerText: result[5],
+        };
+    }
+    return null;
+}
 
 const findHeaderSize = (text: string) => {
     if (text && text.length) {
@@ -103,12 +122,11 @@ const findHeaderSize = (text: string) => {
     return null;
 };
 
-// const printResultTable = (result: RegExpMatchArray) => {
-//     console.log('Result array:----------------------------------');
-//
-//     for (const elem of result) {
-//         console.log(elem);
-//     }
-//     console.log('----------------------------------');
-//
-// };
+const printResultTable = (result: RegExpMatchArray) => {
+    console.log('Result array:----------------------------------');
+    for (const elem of result) {
+        console.log(elem);
+    }
+    console.log('----------------------------------');
+
+};

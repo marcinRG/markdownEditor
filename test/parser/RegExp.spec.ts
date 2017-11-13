@@ -148,3 +148,65 @@ describe('link element match test', () => {
         expect(match[2]).toBe('https://www.youtube.com/watch?v=idipMrfAZHk');
     });
 });
+
+describe('list element match test', ()=>{
+    const listRegExp = /((?:\s?\*\s.*?\n|$)*)/i;
+    const textToParse = `* tekst1 
+* tekst2
+* tekst3
+`;
+
+    beforeEach(() => {
+        listRegExp.lastIndex = 0;
+    });
+
+    it('should match', () => {
+        console.log('should find match for list element');
+        const match = listRegExp.exec(textToParse);
+        expect(match).toBeDefined();
+        expect(match[0]).toBe(textToParse);
+    });
+
+});
+
+describe('quote element match test', ()=>{
+    const listRegExp = /((?:>.*?\n|$)*)/i;
+    const textToParse = `>tekst1 
+> tekst2
+> tekst3
+`;
+
+    beforeEach(() => {
+        listRegExp.lastIndex = 0;
+    });
+
+    it('should match', () => {
+        console.log('should find match qoute element');
+        const match = listRegExp.exec(textToParse);
+        expect(match).toBeDefined();
+        expect(match[0]).toBe(textToParse);
+    });
+
+});
+
+describe('pre element match test', ()=>{
+    const preRegExp = /(?:'''\n((?:.|\s)*?)'''\n)/i;
+    const markdown = `'''\n`;
+    const text = `
+    test1 
+    test2
+    test3`;
+    const textToParse = `
+ ${markdown}${text}${markdown}    
+    `;
+    beforeEach(() => {
+        preRegExp.lastIndex = 0;
+    });
+
+    it('should match', () => {
+        console.log('should find match pre element');
+        const match = preRegExp.exec(textToParse);
+        expect(match).toBeDefined();
+        expect(match[1]).toBe(text);
+    });
+});
