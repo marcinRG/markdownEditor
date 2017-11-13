@@ -1,4 +1,4 @@
-import { IStringable } from './interfaces/IStringable';
+import {IStringable} from './interfaces/IStringable';
 
 export class Collection<T extends IStringable> {
     private array: T[] = [];

@@ -8,7 +8,7 @@ const regExpStr = '((#{1,6})\\s(.*)(?:\\n|$))' + '|' + //header
     //'(__(.*)__)' + '|' +  //em
     //'(--(.*)--)' + '|' +  //del
     //'(\\((.*)\\)\\[((?:https?\\:\\/\\/)?.*)])' + '|' + //link
-    '((?:(\\s+)\\*\\s*.*?\\n|$)+)';  //link*/
+    '((?:(\\s+)\\*\\s*.*?\\n|$)+)';  //test*/
 const bigRegExp = new RegExp(regExpStr, 'i');
 
 export class Parser {
@@ -23,6 +23,14 @@ export class Parser {
             }
         }
     }
+}
+
+const findSingleLineTags = () => {
+    return null;
+}
+
+const findMulitLineTags = () => {
+    return null;
 }
 
 const processText = (text: string, result: RegExpMatchArray, parentNode: INode) => {

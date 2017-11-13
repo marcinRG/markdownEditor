@@ -1,9 +1,9 @@
-import { Parser } from '../../src/ts/parser/Parser';
-import { INode } from '../../src/ts/model/interfaces/INode';
-import { TagNode } from '../../src/ts/model/TagNode';
-import { HTMLTags } from '../../src/ts/model/enums/HTMLTags';
+import {Parser} from '../../src/ts/parser/Parser';
+import {INode} from '../../src/ts/model/interfaces/INode';
+import {TagNode} from '../../src/ts/model/TagNode';
+import {HTMLTags} from '../../src/ts/model/enums/HTMLTags';
 
-describe('Parser tests', () => {
+xdescribe('Parser tests', () => {
 
     xit('should parse text to html tags', () => {
         const textToParse = `Jakis tekst # Weekly JavaScript Challenge #9`;
@@ -110,8 +110,8 @@ describe('Parser tests', () => {
         const textToParse = ` * tekst1
  * tekst2
  * tekst3`;
-        const expectedResult = `<${HTMLTags.DIV}><${HTMLTags.UL}><${HTMLTags.LI}>tekst1</${HTMLTags.LI}>`+
-            `<${HTMLTags.LI}>tekst2</${HTMLTags.LI}><${HTMLTags.LI}>tekst3</${HTMLTags.LI}>`+
+        const expectedResult = `<${HTMLTags.DIV}><${HTMLTags.UL}><${HTMLTags.LI}>tekst1</${HTMLTags.LI}>` +
+            `<${HTMLTags.LI}>tekst2</${HTMLTags.LI}><${HTMLTags.LI}>tekst3</${HTMLTags.LI}>` +
             `</${HTMLTags.UL}></${HTMLTags.DIV}>`;
         console.log(`expected Result: ${expectedResult}`);
         const parentNode: INode = new TagNode(HTMLTags.DIV);
