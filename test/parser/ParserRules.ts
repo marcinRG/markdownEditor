@@ -4,38 +4,38 @@ const rules = {
         regExpStr: '((#{1,6})\\s(.*)(?:\\n|$))',
         textNodeChildrenAllowed: true,
     },
-    // strong: {
-    //     allowedChildrenNodes: ['underline', 'link', 'deleted'],
-    //     regExpStr: '(\\*\\*(.*)\\*\\*)',
-    //     textNodeChildrenAllowed: true,
-    // },
-    // list: {
-    //     allowedChildrenNodes: ['li'],
-    //     regExpStr: '((?:\\s?\\*\\s.*?\\n|$)*)',
-    //     isMultiLine: true,
-    // },
-    // quote: {
-    //     allowedChildrenNodes: ['singleQuote'],
-    //     regExpStr: '((?:\\s?\\*\\s.*?\\n|$)*)',
-    //     isMultiLine: true,
-    //     textNodeChildrenAllowed: true,
-    // },
+    strong: {
+        allowedChildrenNodes: ['underline', 'link', 'deleted'],
+        regExpStr: '(\\*\\*(.*)\\*\\*)',
+        textNodeChildrenAllowed: true,
+    },
+    list: {
+        allowedChildrenNodes: ['li'],
+        regExpStr: '((?:\\*\\s.*?\\n|$)+)',
+        isMultiLine: true,
+    },
+    quote: {
+        allowedChildrenNodes: ['singleQuote'],
+        regExpStr: '((?:>.*?\\n|$)+)',
+        isMultiLine: true,
+        textNodeChildrenAllowed: true,
+    },
     // code: {
     //     allowedChildrenNodes: [],
     //     regExpStr: '((?:\\s?\\*\\s.*?\\n|$)*)',
     //     isMultiLine: true,
     //     textNodeChildrenAllowed: true,
     // },
-    // underline: {
-    //     allowedChildrenNodes: [],
-    //     regExpStr: '(__(.*)__)',
-    //     textNodeChildrenAllowed: true,
-    // },
-    // deleted: {
-    //     allowedChildrenNodes: [],
-    //     regExpStr: '(--(.*)--)',
-    //     textNodeChildrenAllowed: true,
-    // },
+    underline: {
+        allowedChildrenNodes: [],
+        regExpStr: '(__(.*)__)',
+        textNodeChildrenAllowed: true,
+    },
+    deleted: {
+        allowedChildrenNodes: [],
+        regExpStr: '(--(.*)--)',
+        textNodeChildrenAllowed: true,
+    },
 };
 
 export class ParserRules {

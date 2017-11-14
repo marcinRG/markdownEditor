@@ -6,11 +6,6 @@ const allTagsRegExp = new RegExp(ParserRules.getAllTagsRuleStr(), 'i');
 const allMulitLineTagsRegExp = new RegExp(ParserRules.getAllMultiLineTagsRuleStr(), 'i');
 const allSingleLineTagsRegExp = new RegExp(ParserRules.getAllSingleLineTagsRuleStr(), 'i');
 
-const isText = (text: string): boolean => {
-    const results = text.search((allTagsRegExp));
-    return ((results > 0) || (results < 0));
-};
-
 const getText = (text: string): string => {
     const results = text.search((allTagsRegExp));
     if (results > 0) {
@@ -25,34 +20,40 @@ const getText = (text: string): string => {
 export class Parser2 {
     public static parseText(text: string, parentNode: INode) {
         if (text && text.length) {
-            const txt2 = getText(text);
-            if (txt2) {
-                processText(text, txt2, parentNode);
-            } else {
-                console.log('else h');
-                findSingleLineTag(text, parentNode);
-            }
+            text = findText(text, parentNode);
+            findMultiLineTag(text, parentNode);
         }
     }
 }
 
-const findSingleLineTag = (orgText: string, parentNode: INode) => {
-    console.log(orgText);
+const findText = (text: string, parentNode: INode) => {
+    const txtNew = getText(text);
+    if (txtNew) {
+        const len = (txtNew && txtNew.length) ? txtNew.length : text.length;
+        parentNode.addNode(new TextNode(txtNew));
+        text = text.substring(len, text.length);
+    }
+    return text;
+};
+
+const findSingleLineTag = (text: string, parentNode: INode): string => {
+    console.log(text);
     console.log(ParserRules.getAllSingleLineTagsRuleStr());
-    const results = orgText.match(allSingleLineTagsRegExp);
+    const results = text.match(allSingleLineTagsRegExp);
     if (results) {
         console.log('found something');
         printResultTable(results);
     }
-    console.log('finding single line Tag');
+    return text;
 };
 
-const processText = (orgText: string, newText: string, parentNode: INode) => {
-    const len = (newText && newText.length) ? newText.length : orgText.length;
-    console.log(len);
-    parentNode.addNode(new TextNode(newText));
-    const newText2 = orgText.substring(len, orgText.length);
-    Parser2.parseText(newText2, parentNode);
+const findMultiLineTag = (text: string, parentNode: INode):string => {
+    const results = text.match(allMulitLineTagsRegExp);
+    if (results) {
+        console.log('found match');
+        printResultTable(results);
+    }
+    return text;
 };
 
 const printResultTable = (result: RegExpMatchArray) => {
