@@ -2,7 +2,7 @@ import { HTMLTags } from '../../src/ts/model/enums/HTMLTags';
 import {TagNode} from '../../src/ts/model/TagNode';
 
 
-describe('TagNode tests', () => {
+xdescribe('TagNode tests', () => {
     it('should exist & method toString should return value', () => {
         console.log('should exist & method toString should return value');
         const tagNode = new TagNode(HTMLTags.DIV);
