@@ -1,16 +1,16 @@
 import {IStringable} from './interfaces/IStringable';
 import {INodeInfo} from './interfaces/INodeInfo';
-import {HTMLTags} from './enums/HTMLTags';
+import {HTMLTags} from '../settings/HTMLTags'
 import {NodeType} from './enums/NodeType';
 
 export class TextNode implements  IStringable,INodeInfo {
     public nodeType: NodeType;
-    public nodeName?: HTMLTags;
+    public nodeName: string;
     private textContent: string;
 
     constructor(text:string) {
        this.nodeType = NodeType.TextNode;
-       this.nodeName = null;
+       this.nodeName  = HTMLTags.text;
        this.textContent = text;
     }
 
@@ -18,4 +18,7 @@ export class TextNode implements  IStringable,INodeInfo {
         return this.textContent;
     }
 
+    public getNodeName() {
+        return this.nodeName;
+    }
 }

@@ -1,4 +1,4 @@
-xdescribe('List element match test', () => {
+describe('List element match test', () => {
     const listElemRegExp = /\*\s(.*?)(?:\n|$)/g;
     const testListText = `Zaimplementowano:
  * **pogrubienie**
@@ -64,7 +64,7 @@ xdescribe('List element match test', () => {
     });
 });
 
-xdescribe('Header element match test', () => {
+describe('Header element match test', () => {
     const headerRegExp = /(#{1,6})\s(.*)(?:\n|$)/g;
     //          whole=[0] gr1=[1]  gr2=[2]
     const headerTestText = `
@@ -107,7 +107,7 @@ xdescribe('Header element match test', () => {
 
 });
 
-xdescribe('link element match test', () => {
+describe('link element match test', () => {
     const linkRegExp = /\((.*)\)\[((?:https?\:\/\/)?.*)]/g;
     const testLinkText = `  (jakiś tekst)[http://www.onet.pl]`;
     const testLinkText2 = ` (artykuł na wyborcza.pl)[http://wyborcza.pl/7,75400,22586094,` +
@@ -149,9 +149,9 @@ xdescribe('link element match test', () => {
     });
 });
 
-xdescribe('list element match test', () => {
+describe('list element match test', () => {
     const listRegExp = /((?:\s?\*\s.*?\n|$)*)/i;
-    const textToParse = `* tekst1 
+    const textToParse = `* tekst1
 * tekst2
 * tekst3
 `;
@@ -169,9 +169,9 @@ xdescribe('list element match test', () => {
 
 });
 
-xdescribe('quote element match test', () => {
+describe('quote element match test', () => {
     const listRegExp = /((?:>.*?\n|$)*)/i;
-    const textToParse = `>tekst1 
+    const textToParse = `>tekst1
 > tekst2
 > tekst3
 `;
@@ -189,15 +189,15 @@ xdescribe('quote element match test', () => {
 
 });
 
-xdescribe('pre element match test', () => {
+describe('pre element match test', () => {
     const preRegExp = /(?:'''\n((?:.|\s)*?)'''\n)/i;
     const markdown = `'''\n`;
     const text = `
-    test1 
+    test1
     test2
     test3`;
     const textToParse = `
- ${markdown}${text}${markdown}    
+ ${markdown}${text}${markdown}
     `;
     beforeEach(() => {
         preRegExp.lastIndex = 0;

@@ -1,6 +1,5 @@
 import {INode} from './interfaces/INode';
 import {NodeType} from './enums/NodeType';
-import {HTMLTags} from './enums/HTMLTags';
 import {Collection} from './Collection';
 import {Property} from './Property';
 import {TextNode} from './TextNode';
@@ -9,11 +8,12 @@ import {IStringable} from './interfaces/IStringable';
 export class TagNode implements INode {
 
     public nodeType: NodeType;
-    public nodeName?: HTMLTags;
+    public nodeName: string;
     private nodes: Collection<IStringable>;
     private properties: Collection<Property>;
 
-    constructor(nodeName: HTMLTags, text?: string) {
+
+    constructor(nodeName: string, text?: string) {
         this.nodeName = nodeName;
         this.nodeType = NodeType.TagNode;
         this.nodes = new Collection<INode>();
@@ -42,5 +42,9 @@ export class TagNode implements INode {
 
     public toString(): string {
         return `<${this.nodeName}${this.properties.toString()}>${this.nodes.toString()}</${this.nodeName}>`;
+    }
+
+    public getNodeName(): string {
+        return this.nodeName;
     }
 }

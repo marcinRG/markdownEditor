@@ -1,7 +1,11 @@
+import {IMatchResult} from './IMatchResult';
+
 export interface IParserRule {
     allowedChildrenNodes: string[];
     regExpStr: string;
-    textNodeChildrenAllowed: boolean;
+    tagName: string;
+    textNodeChildrenAllowed?: boolean;
     matchGroups: number;
-    isMultiLine: boolean;
+    isMultiLine?: boolean;
+    values(matchResult: RegExpMatchArray, index: number): IMatchResult;
 }
