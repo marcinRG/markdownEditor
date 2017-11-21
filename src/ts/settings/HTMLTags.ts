@@ -5,7 +5,7 @@ export class HTMLTags {
     public static list: string = 'ul';
     public static listElement: string = 'li';
     public static underline: string = 'h';
-    public static deleted: string = 'h';
+    public static deleted: string = 'del';
     public static link: string = 'a';
     public static text: string = 'TEXT';
 }
