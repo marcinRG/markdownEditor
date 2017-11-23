@@ -1,6 +1,7 @@
 import {IMatchResult} from './IMatchResult';
 
 export interface IParserRule {
+    name: string;
     allowedChildrenNodes: string[];
     regExpStr: string;
     tagName: string;

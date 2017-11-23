@@ -12,7 +12,6 @@ export class TagNode implements INode {
     private nodes: Collection<IStringable>;
     private properties: Collection<Property>;
 
-
     constructor(nodeName: string, text?: string) {
         this.nodeName = nodeName;
         this.nodeType = NodeType.TagNode;
