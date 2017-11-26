@@ -150,7 +150,7 @@ describe('link element match test', () => {
 });
 
 describe('list element match test', () => {
-    const listRegExp = /((?:\s?\*\s.*?\n|$)*)/i;
+    const listRegExp = /((?:\s?\*\s.*?\n|$)+)/i;
     const textToParse = `* tekst1
 * tekst2
 * tekst3
@@ -170,7 +170,7 @@ describe('list element match test', () => {
 });
 
 describe('quote element match test', () => {
-    const listRegExp = /((?:>.*?\n|$)*)/i;
+    const listRegExp = /((?:>.*?\n|$)+)/i;
     const textToParse = `>tekst1
 > tekst2
 > tekst3

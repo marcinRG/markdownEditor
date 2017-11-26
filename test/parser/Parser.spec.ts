@@ -1,17 +1,18 @@
 import {Parser} from '../../src/ts/services/Parser';
 import {HTMLTags} from '../../src/ts/settings/HTMLTags';
-import {INode} from '../../src/ts/model/interfaces/INode';
 import {IParserRule} from '../../src/ts/model/interfaces/IParserRule';
 import {IMatchResult} from '../../src/ts/model/interfaces/IMatchResult';
 import {Tags} from '../../src/ts/settings/Tags';
+import {INode} from '../../src/ts/model/interfaces/INode';
+import {ITag} from '../../src/ts/model/interfaces/ITag';
+import {Property} from '../../src/ts/model/Property';
 
 describe('Parser tests', () => {
 
     const parserRules: IParserRule[] = [
         {
             name: Tags.all,
-            tagName: HTMLTags.all,
-            allowedChildrenNodes: ['header', 'underline', 'strong', 'deleted', 'list'],
+            allowedChildrenNodes: [Tags.header, Tags.underline, Tags.strong, Tags.deleted, Tags.link, Tags.list],
             regExpStr: '((?:.*?\\n|$)*)',
             isMultiLine: true,
             textNodeChildrenAllowed: true,
@@ -20,7 +21,7 @@ describe('Parser tests', () => {
                 if (matchResult[index]) {
                     return {
                         matchedText: matchResult[index],
-                        tag: HTMLTags.all,
+                        tag: Tags.all,
                         innerText: matchResult[index],
                     };
                 }
@@ -28,7 +29,6 @@ describe('Parser tests', () => {
         },
         {
             name: Tags.header,
-            tagName: HTMLTags.header,
             allowedChildrenNodes: ['underline', 'strong', 'deleted'],
             regExpStr: '((#{1,6})\\s(.*)(?:\\n|$))',
             textNodeChildrenAllowed: true,
@@ -36,7 +36,7 @@ describe('Parser tests', () => {
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: HTMLTags.header,
+                        tag: Tags.header,
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 2],
                         headerSize: matchResult[index + 1].length,
@@ -46,15 +46,14 @@ describe('Parser tests', () => {
         },
         {
             name: Tags.strong,
-            tagName: HTMLTags.strong,
-            allowedChildrenNodes: ['underline', 'link', 'deleted'],
+            allowedChildrenNodes: [Tags.underline, Tags.deleted, Tags.link],
             regExpStr: '(\\*\\*(.*)\\*\\*)',
             textNodeChildrenAllowed: true,
             matchGroups: 2,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: HTMLTags.strong,
+                        tag: Tags.strong,
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 1],
                     };
@@ -63,15 +62,14 @@ describe('Parser tests', () => {
         },
         {
             name: Tags.list,
-            tagName: HTMLTags.list,
-            allowedChildrenNodes: ['li'],
-            regExpStr: '((?:\\s?\\*\\s.*?\\n|$)+)',
+            allowedChildrenNodes: [Tags.listElement],
+            regExpStr: '(((?:\\s?\\*\\s.*?(?:\\n|$)))+)',
             isMultiLine: true,
             matchGroups: 1,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: HTMLTags.list,
+                        tag: Tags.list,
                         matchedText: matchResult[index],
                         innerText: matchResult[index],
                     };
@@ -79,16 +77,31 @@ describe('Parser tests', () => {
             },
         },
         {
+            name: Tags.listElement,
+            allowedChildrenNodes: [Tags.underline, Tags.link, Tags.deleted, Tags.strong],
+            regExpStr: '((?:\\s?\\*\\s(.*?)(?:\\n|$)))',
+            isMultiLine: true,
+            matchGroups: 2,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.listElement,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index+1],
+                    };
+                }
+            },
+        },
+        {
             name: Tags.underline,
-            tagName: HTMLTags.underline,
-            allowedChildrenNodes: [],
+            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.link],
             regExpStr: '(__(.*)__)',
             textNodeChildrenAllowed: true,
             matchGroups: 2,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: HTMLTags.underline,
+                        tag: Tags.underline,
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 1],
                     };
@@ -97,152 +110,189 @@ describe('Parser tests', () => {
         },
         {
             name: Tags.deleted,
-            tagName: HTMLTags.deleted,
-            allowedChildrenNodes: [],
+            allowedChildrenNodes: [Tags.strong, Tags.link, Tags.underline],
             regExpStr: '(--(.*)--)',
             textNodeChildrenAllowed: true,
             matchGroups: 2,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: HTMLTags.deleted,
+                        tag: Tags.deleted,
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 1],
                     };
                 }
             },
         },
+        {
+            name: Tags.link,
+            allowedChildrenNodes: [Tags.deleted, Tags.strong, Tags.underline],
+            regExpStr: '(\\((.*)\\)\\[((?:https?\\:\\/\\/)?.*)])',
+            textNodeChildrenAllowed: true,
+            matchGroups: 3,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.link,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index + 1],
+                        link: matchResult[index + 2]
+                    };
+                }
+            },
+        },
     ];
-    const parser = new Parser(parserRules);
+    const tags: ITag[] = [
+        {
+            tag: Tags.all,
+            htmlTag: HTMLTags.div,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h1,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h2,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h3,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h4,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h5,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h6,
+        },
+        {
+            tag: Tags.list,
+            htmlTag: HTMLTags.ul,
+        },
+        {
+            tag: Tags.listElement,
+            htmlTag: HTMLTags.li,
+        },
+        {
+            tag: Tags.underline,
+            htmlTag: HTMLTags.underline,
+        },
+        {
+            tag: Tags.strong,
+            htmlTag: HTMLTags.strong,
+        },
+        {
+            tag: Tags.link,
+            htmlTag: HTMLTags.a,
+        },
+    ];
+    const parser = new Parser(parserRules, tags);
 
     it('should exist and have certain properties', () => {
         expect(parser).toBeDefined();
-        expect(parser.getRules().length).toBe(6);
-        const rule: IParserRule = parser.getParserRule(Tags.header);
+        expect((parser.getRules().length > 0)).toBeTruthy();
+        const rule: IParserRule = parser.getParserRuleByTag(Tags.header);
         expect(rule).toBeDefined();
         expect(rule.regExpStr).toBe('((#{1,6})\\s(.*)(?:\\n|$))');
         expect(rule.allowedChildrenNodes.length).toBe(3);
         expect(rule.matchGroups).toBe(3);
-        const rule2 = parser.getParserRule(Tags.underline);
+        const rule2 = parser.getParserRuleByTag(Tags.underline);
         const str1 = rule2.regExpStr;
         expect(str1).toBe('(__(.*)__)');
-        const str2 = parser.getParserRule(Tags.strong).regExpStr;
+        const str2 = parser.getParserRuleByTag(Tags.strong).regExpStr;
         expect(str2).toBe('(\\*\\*(.*)\\*\\*)');
-        const str3 = parser.getParserRule(Tags.deleted).regExpStr;
+        const str3 = parser.getParserRuleByTag(Tags.deleted).regExpStr;
+        expect(str3).toBe('(--(.*)--)');
         expect(parser.getAllowedChildrenRegexStr(Tags.header)).toBe(str1 + '|' + str2 + '|' + str3);
+        const tags = parser.getTags();
+        expect(tags).toBeDefined();
+
+        const rule3 = parser.getParserRuleByHTMLTag(HTMLTags.h1);
+        expect(rule3).toBeDefined();
+        expect(rule3.regExpStr).toBe(rule.regExpStr);
     });
 
-    it('should parse text to html tags', () => {
+    it('should parse text to div with header h1', () => {
         const textToParse = `Jakis tekst # Weekly JavaScript Challenge #9`;
-        const expectedResult = `<${HTMLTags.all}>Jakis tekst <${HTMLTags.header}1>` +
-            `Weekly JavaScript Challenge #9</${HTMLTags.header}1></${HTMLTags.all}>`;
+        const expectedResult = `<${HTMLTags.div}>Jakis tekst <${HTMLTags.h1}>` +
+            `Weekly JavaScript Challenge #9</${HTMLTags.h1}></${HTMLTags.div}>`;
         console.log(`expected Result: ${expectedResult}`);
         const node: INode = parser.parse(textToParse);
         expect(node.toString()).toBe(expectedResult);
     });
 
-    xit('should parse text to html tags', () => {
-        // const textToParse = `## Weekly JavaScript Challenge #9`;
-        // const expectedResult = `<${HTMLTags.DIV}><${HTMLTags.H2}>` +
-        //     `Weekly JavaScript Challenge #9</${HTMLTags.H2}></${HTMLTags.DIV}>`;
-        // console.log(`expected Result: ${expectedResult}`);
-        // const parentNode: INode = new TagNode(HTMLTags.DIV);
-        // Parser.parseText(textToParse, parentNode);
-        // expect(parentNode.toString()).toBe(expectedResult);
+    it('should parse text to div with h2 header', () => {
+        const textToParse = `## Weekly JavaScript Challenge #9`;
+        const expectedResult = `<${HTMLTags.div}><${HTMLTags.h2}>` +
+            `Weekly JavaScript Challenge #9</${HTMLTags.h2}></${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
     });
 
-    xit('should parse text to html tags', () => {
-        // const textToParse = `Jakis tekst ### Weekly JavaScript Challenge #9`;
-        // const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H3}>` +
-        //     `Weekly JavaScript Challenge #9</${HTMLTags.H3}></${HTMLTags.DIV}>`;
-        // console.log(`expected Result: ${expectedResult}`);
-        // const parentNode: INode = new TagNode(HTMLTags.DIV);
-        // Parser.parseText(textToParse, parentNode);
-        // expect(parentNode.toString()).toBe(expectedResult);
+    it('should parse text to div with h6', () => {
+        const textToParse = `Jakis tekst ###### Weekly JavaScript Challenge #9`;
+        const expectedResult = `<${HTMLTags.div}>Jakis tekst <${HTMLTags.h6}>` +
+            `Weekly JavaScript Challenge #9</${HTMLTags.h6}></${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
     });
 
-    xit('should parse text to html tags', () => {
-        // const textToParse = `Jakis tekst #### Weekly JavaScript Challenge #9`;
-        // const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H4}>` +
-        //     `Weekly JavaScript Challenge #9</${HTMLTags.H4}></${HTMLTags.DIV}>`;
-        // console.log(`expected Result: ${expectedResult}`);
-        // const parentNode: INode = new TagNode(HTMLTags.DIV);
-        // Parser.parseText(textToParse, parentNode);
-        // expect(parentNode.toString()).toBe(expectedResult);
+    it('should parse text to div with h6 pt no.2', () => {
+        const textToParse = `Jakis tekst ####### Weekly JavaScript Challenge #9`;
+        const expectedResult = `<${HTMLTags.div}>Jakis tekst #<${HTMLTags.h6}>` +
+            `Weekly JavaScript Challenge #9</${HTMLTags.h6}></${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
     });
 
-    xit('should parse text to html tags', () => {
-        // const textToParse = `Jakis tekst ##### Weekly JavaScript Challenge #9`;
-        // const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H5}>` +
-        //     `Weekly JavaScript Challenge #9</${HTMLTags.H5}></${HTMLTags.DIV}>`;
-        // console.log(`expected Result: ${expectedResult}`);
-        // const parentNode: INode = new TagNode(HTMLTags.DIV);
-        // Parser.parseText(textToParse, parentNode);
-        // expect(parentNode.toString()).toBe(expectedResult);
+    it('should parse text to html tags', () => {
+        const textToParse = `Jakis tekst # Weekly **JavaScript** Challenge #9`;
+        const expectedResult = `<${HTMLTags.div}>Jakis tekst <${HTMLTags.h1}>` +
+            `Weekly <${HTMLTags.strong}>JavaScript</${HTMLTags.strong}> Challenge #9</${HTMLTags.h1}></${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
     });
 
-    xit('should parse text to html tags', () => {
-        // const textToParse = `Jakis tekst ###### Weekly JavaScript Challenge #9`;
-        // const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H6}>` +
-        //     `Weekly JavaScript Challenge #9</${HTMLTags.H6}></${HTMLTags.DIV}>`;
-        // console.log(`expected Result: ${expectedResult}`);
-        // const parentNode: INode = new TagNode(HTMLTags.DIV);
-        // Parser.parseText(textToParse, parentNode);
-        // expect(parentNode.toString()).toBe(expectedResult);
+    it('should parse text to html tags', () => {
+        const textToParse = `Jakis tekst __JavaScript__ Challenge #9`;
+        const property = new Property('class', 'underline');
+        const expectedResult = `<${HTMLTags.div}>Jakis tekst ` +
+            `<${HTMLTags.underline}${property.toString()}>JavaScript</${HTMLTags.underline}> Challenge #9</${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
     });
 
-    xit('should parse text to html tags', () => {
-        // const textToParse = `Jakis tekst ####### Weekly JavaScript Challenge #9`;
-        // const expectedResult = `<${HTMLTags.DIV}>Jakis tekst #<${HTMLTags.H6}>` +
-        //     `Weekly JavaScript Challenge #9</${HTMLTags.H6}></${HTMLTags.DIV}>`;
-        // console.log(`expected Result: ${expectedResult}`);
-        // const parentNode: INode = new TagNode(HTMLTags.DIV);
-        // Parser.parseText(textToParse, parentNode);
-        // expect(parentNode.toString()).toBe(expectedResult);
+    it('should parse text to html tags', () => {
+        const textToParse = `Jakis tekst (マクロスMACROSS 82-99)[https://www.youtube.com/watch?v=idipMrfAZHk]`;
+        const expectedResult = `<${HTMLTags.div}>Jakis tekst ` +
+            `<${HTMLTags.a} href="https://www.youtube.com/watch?v=idipMrfAZHk">` +
+            `マクロスMACROSS 82-99</${HTMLTags.a}></${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
     });
 
-    xit('should parse text to html tags', () => {
-        // const textToParse = `Jakis tekst # Weekly **JavaScript** Challenge #9`;
-        // const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H1}>` +
-        //     `Weekly <${HTMLTags.B}>JavaScript</${HTMLTags.B}> Challenge #9</${HTMLTags.H1}></${HTMLTags.DIV}>`;
-        // console.log(`expected Result: ${expectedResult}`);
-        // const parentNode: INode = new TagNode(HTMLTags.DIV);
-        // Parser.parseText(textToParse, parentNode);
-        // expect(parentNode.toString()).toBe(expectedResult);
-    });
-
-    xit('should parse text to html tags', () => {
-        // const textToParse = `Jakis tekst # Weekly __JavaScript__ Challenge #9`;
-        // const expectedResult = `<${HTMLTags.DIV}>Jakis tekst <${HTMLTags.H1}>` +
-        //     `Weekly <${HTMLTags.I}>JavaScript</${HTMLTags.I}> Challenge #9</${HTMLTags.H1}></${HTMLTags.DIV}>`;
-        // console.log(`expected Result: ${expectedResult}`);
-        // const parentNode: INode = new TagNode(HTMLTags.DIV);
-        // Parser.parseText(textToParse, parentNode);
-        // expect(parentNode.toString()).toBe(expectedResult);
-    });
-
-    xit('should parse text to html tags', () => {
-        // const textToParse = `Jakis tekst (マクロスMACROSS 82-99)[https://www.youtube.com/watch?v=idipMrfAZHk]`;
-        // const expectedResult = `<${HTMLTags.DIV}>Jakis tekst ` +
-        //     `<${HTMLTags.A} href="https://www.youtube.com/watch?v=idipMrfAZHk">` +
-        //     `マクロスMACROSS 82-99</${HTMLTags.A}></${HTMLTags.DIV}>`;
-        // console.log(`expected Result: ${expectedResult}`);
-        // const parentNode: INode = new TagNode(HTMLTags.DIV);
-        // Parser.parseText(textToParse, parentNode);
-        // expect(parentNode.toString()).toBe(expectedResult);
-    });
-
-    xit('should parse text to html tags', () => {
-        //        const textToParse = ` * tekst1
-        // * tekst2
-        // * tekst3`;
-        //        const expectedResult = `<${HTMLTags.DIV}><${HTMLTags.UL}><${HTMLTags.LI}>tekst1</${HTMLTags.LI}>` +
-        //            `<${HTMLTags.LI}>tekst2</${HTMLTags.LI}><${HTMLTags.LI}>tekst3</${HTMLTags.LI}>` +
-        //            `</${HTMLTags.UL}></${HTMLTags.DIV}>`;
-        //        console.log(`expected Result: ${expectedResult}`);
-        //        const parentNode: INode = new TagNode(HTMLTags.DIV);
-        //        Parser.parseText(textToParse, parentNode);
-        //        expect(parentNode.toString()).toBe(expectedResult);
+   it('should parse text to html tags', () => {
+                const textToParse = ` * tekst1
+ * tekst2
+ * tekst3`;
+        const expectedResult = `<${HTMLTags.div}><${HTMLTags.ul}><${HTMLTags.li}>tekst1</${HTMLTags.li}>` +
+                   `<${HTMLTags.li}>tekst2</${HTMLTags.li}><${HTMLTags.li}>tekst3</${HTMLTags.li}>` +
+                   `</${HTMLTags.ul}></${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+       const node: INode = parser.parse(textToParse);
+       expect(node.toString()).toBe(expectedResult);
     });
 
 });

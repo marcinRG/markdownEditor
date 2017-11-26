@@ -1,5 +1,4 @@
 import {IParserRule} from '../model/interfaces/IParserRule';
-import {HTMLTags} from './HTMLTags';
 import {IMatchResult} from '../model/interfaces/IMatchResult';
 import {Tags} from './Tags';
 
@@ -7,7 +6,6 @@ export class ParserRules {
     public static rules: IParserRule[] = [
         {
             name: Tags.all,
-            tagName: HTMLTags.all,
             allowedChildrenNodes: ['header', 'underline', 'strong', 'deleted', 'list'],
             regExpStr: '((?:.*?\\n|$)*)',
             isMultiLine: true,
@@ -17,7 +15,7 @@ export class ParserRules {
                 if (matchResult[index]) {
                     return {
                         matchedText: matchResult[index],
-                        tag: HTMLTags.all,
+                        tag: Tags.all,
                         innerText: matchResult[index],
                     };
                 }
@@ -25,7 +23,6 @@ export class ParserRules {
         },
         {
             name: Tags.header,
-            tagName: HTMLTags.header,
             allowedChildrenNodes: ['underline', 'strong', 'deleted'],
             regExpStr: '((#{1,6})\\s(.*)(?:\\n|$))',
             textNodeChildrenAllowed: true,
@@ -33,7 +30,7 @@ export class ParserRules {
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: HTMLTags.header,
+                        tag: Tags.header,
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 2],
                         headerSize: matchResult[index + 1].length,
@@ -43,7 +40,6 @@ export class ParserRules {
         },
         {
             name: Tags.strong,
-            tagName: HTMLTags.strong,
             allowedChildrenNodes: ['underline', 'link', 'deleted'],
             regExpStr: '(\\*\\*(.*)\\*\\*)',
             textNodeChildrenAllowed: true,
@@ -51,7 +47,7 @@ export class ParserRules {
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: HTMLTags.strong,
+                        tag: Tags.strong,
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 1],
                     };
@@ -60,7 +56,6 @@ export class ParserRules {
         },
         {
             name: Tags.list,
-            tagName: HTMLTags.list,
             allowedChildrenNodes: ['li'],
             regExpStr: '((?:\\s?\\*\\s.*?\\n|$)+)',
             isMultiLine: true,
@@ -68,7 +63,7 @@ export class ParserRules {
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: HTMLTags.list,
+                        tag: Tags.list,
                         matchedText: matchResult[index],
                         innerText: matchResult[index],
                     };
@@ -77,7 +72,6 @@ export class ParserRules {
         },
         {
             name: Tags.underline,
-            tagName: HTMLTags.underline,
             allowedChildrenNodes: [],
             regExpStr: '(__(.*)__)',
             textNodeChildrenAllowed: true,
@@ -85,7 +79,7 @@ export class ParserRules {
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: HTMLTags.underline,
+                        tag: Tags.underline,
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 1],
                     };
@@ -94,7 +88,6 @@ export class ParserRules {
         },
         {
             name: Tags.deleted,
-            tagName: HTMLTags.deleted,
             allowedChildrenNodes: [],
             regExpStr: '(--(.*)--)',
             textNodeChildrenAllowed: true,
@@ -102,7 +95,7 @@ export class ParserRules {
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: HTMLTags.deleted,
+                        tag: Tags.deleted,
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 1],
                     };
