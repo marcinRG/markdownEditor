@@ -5,7 +5,6 @@ import {IMatchResult} from '../../src/ts/model/interfaces/IMatchResult';
 import {Tags} from '../../src/ts/settings/Tags';
 import {INode} from '../../src/ts/model/interfaces/INode';
 import {ITag} from '../../src/ts/model/interfaces/ITag';
-import {Property} from '../../src/ts/model/Property';
 
 describe('Parser tests', () => {
 
@@ -194,104 +193,20 @@ describe('Parser tests', () => {
     const parser = new Parser(parserRules, tags);
 
     it('should exist and have certain properties', () => {
-        expect(parser).toBeDefined();
-        expect((parser.getRules().length > 0)).toBeTruthy();
-        const rule: IParserRule = parser.getParserRuleByTag(Tags.header);
-        expect(rule).toBeDefined();
-        expect(rule.regExpStr).toBe('((#{1,6})\\s(.*)(?:\\n|$))');
-        expect(rule.allowedChildrenNodes.length).toBe(3);
-        expect(rule.matchGroups).toBe(3);
-        const rule2 = parser.getParserRuleByTag(Tags.underline);
-        const str1 = rule2.regExpStr;
-        expect(str1).toBe('(__(.*)__)');
-        const str2 = parser.getParserRuleByTag(Tags.strong).regExpStr;
-        expect(str2).toBe('(\\*\\*(.*)\\*\\*)');
-        const str3 = parser.getParserRuleByTag(Tags.deleted).regExpStr;
-        expect(str3).toBe('(--(.*)--)');
-        expect(parser.getAllowedChildrenRegexStr(Tags.header)).toBe(str1 + '|' + str2 + '|' + str3);
-        const tags = parser.getTags();
-        expect(tags).toBeDefined();
+        const testList2Text = `
+    Wymagania:
+ * edycja tekstu w polu powoduje automatyczne renderowanie obok
+ * obsługa **przynajmniej** podstawowych elementów języka markdown
+ * tekst powinien się automatycznie zapisywać w przeglądarce
+ * edytor powinien być funkcjonalny również na urządzeniach mobilnych
 
-        const rule3 = parser.getParserRuleByHTMLTag(HTMLTags.h1);
-        expect(rule3).toBeDefined();
-        expect(rule3.regExpStr).toBe(rule.regExpStr);
-    });
+   Technologia:
+  * dowolna ze wskazaniem na czysty JS
+  * dodatkowe utrudnienie: Spróbować zaimplementować obsługę Markdowna samemu bez gotowych bibliotek (nieobowiązkowo)`;
+        const node: INode = parser.parse(testList2Text);
+        console.log(node.toString());
+        expect(node.toString()).toBeDefined();
 
-    it('should parse text to div with header h1', () => {
-        const textToParse = `Jakis tekst # Weekly JavaScript Challenge #9`;
-        const expectedResult = `<${HTMLTags.div}>Jakis tekst <${HTMLTags.h1}>` +
-            `Weekly JavaScript Challenge #9</${HTMLTags.h1}></${HTMLTags.div}>`;
-        console.log(`expected Result: ${expectedResult}`);
-        const node: INode = parser.parse(textToParse);
-        expect(node.toString()).toBe(expectedResult);
-    });
-
-    it('should parse text to div with h2 header', () => {
-        const textToParse = `## Weekly JavaScript Challenge #9`;
-        const expectedResult = `<${HTMLTags.div}><${HTMLTags.h2}>` +
-            `Weekly JavaScript Challenge #9</${HTMLTags.h2}></${HTMLTags.div}>`;
-        console.log(`expected Result: ${expectedResult}`);
-        const node: INode = parser.parse(textToParse);
-        expect(node.toString()).toBe(expectedResult);
-    });
-
-    it('should parse text to div with h6', () => {
-        const textToParse = `Jakis tekst ###### Weekly JavaScript Challenge #9`;
-        const expectedResult = `<${HTMLTags.div}>Jakis tekst <${HTMLTags.h6}>` +
-            `Weekly JavaScript Challenge #9</${HTMLTags.h6}></${HTMLTags.div}>`;
-        console.log(`expected Result: ${expectedResult}`);
-        const node: INode = parser.parse(textToParse);
-        expect(node.toString()).toBe(expectedResult);
-    });
-
-    it('should parse text to div with h6 pt no.2', () => {
-        const textToParse = `Jakis tekst ####### Weekly JavaScript Challenge #9`;
-        const expectedResult = `<${HTMLTags.div}>Jakis tekst #<${HTMLTags.h6}>` +
-            `Weekly JavaScript Challenge #9</${HTMLTags.h6}></${HTMLTags.div}>`;
-        console.log(`expected Result: ${expectedResult}`);
-        const node: INode = parser.parse(textToParse);
-        expect(node.toString()).toBe(expectedResult);
-    });
-
-    it('should parse text to html tags', () => {
-        const textToParse = `Jakis tekst # Weekly **JavaScript** Challenge #9`;
-        const expectedResult = `<${HTMLTags.div}>Jakis tekst <${HTMLTags.h1}>` +
-            `Weekly <${HTMLTags.strong}>JavaScript</${HTMLTags.strong}> Challenge #9</${HTMLTags.h1}></${HTMLTags.div}>`;
-        console.log(`expected Result: ${expectedResult}`);
-        const node: INode = parser.parse(textToParse);
-        expect(node.toString()).toBe(expectedResult);
-    });
-
-    it('should parse text to html tags', () => {
-        const textToParse = `Jakis tekst __JavaScript__ Challenge #9`;
-        const property = new Property('class', 'underline');
-        const expectedResult = `<${HTMLTags.div}>Jakis tekst ` +
-            `<${HTMLTags.underline}${property.toString()}>JavaScript</${HTMLTags.underline}> Challenge #9</${HTMLTags.div}>`;
-        console.log(`expected Result: ${expectedResult}`);
-        const node: INode = parser.parse(textToParse);
-        expect(node.toString()).toBe(expectedResult);
-    });
-
-    it('should parse text to html tags', () => {
-        const textToParse = `Jakis tekst (マクロスMACROSS 82-99)[https://www.youtube.com/watch?v=idipMrfAZHk]`;
-        const expectedResult = `<${HTMLTags.div}>Jakis tekst ` +
-            `<${HTMLTags.a} href="https://www.youtube.com/watch?v=idipMrfAZHk">` +
-            `マクロスMACROSS 82-99</${HTMLTags.a}></${HTMLTags.div}>`;
-        console.log(`expected Result: ${expectedResult}`);
-        const node: INode = parser.parse(textToParse);
-        expect(node.toString()).toBe(expectedResult);
-    });
-
-   it('should parse text to html tags', () => {
-                const textToParse = ` * tekst1
- * tekst2
- * tekst3`;
-        const expectedResult = `<${HTMLTags.div}><${HTMLTags.ul}><${HTMLTags.li}>tekst1</${HTMLTags.li}>` +
-                   `<${HTMLTags.li}>tekst2</${HTMLTags.li}><${HTMLTags.li}>tekst3</${HTMLTags.li}>` +
-                   `</${HTMLTags.ul}></${HTMLTags.div}>`;
-        console.log(`expected Result: ${expectedResult}`);
-       const node: INode = parser.parse(textToParse);
-       expect(node.toString()).toBe(expectedResult);
     });
 
 });

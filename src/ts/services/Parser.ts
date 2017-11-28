@@ -145,7 +145,7 @@ const findAndAddTagNode = (text: string, regexp: RegExp, tagName: string, parent
     const results = text.match(regexp);
     if (results) {
         const pos = findFirstInMatchResult(results);
-        const rule = findChildTagRule(findFirstInMatchResult(results), tagName, rules);
+        const rule = findChildTagRule(pos, tagName, rules);
         if (rule) {
             const matchResult: IMatchResult = rule.values(results, pos);
             if (matchResult) {
