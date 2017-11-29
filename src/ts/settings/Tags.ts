@@ -7,4 +7,8 @@ export class Tags {
     public static underline: string = 'underline';
     public static deleted: string = 'deleted';
     public static link: string = 'link';
+    public static em: string = 'emphasis';
+    public static blockQuote: string = 'blockQuote';
+    public static quote: string = 'quote';
+    public static pre: string = 'pre';
 }

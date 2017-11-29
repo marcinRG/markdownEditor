@@ -12,7 +12,8 @@ describe('Parser tests', () => {
     const parserRules: IParserRule[] = [
         {
             name: Tags.all,
-            allowedChildrenNodes: [Tags.header, Tags.underline, Tags.strong, Tags.deleted, Tags.link, Tags.list],
+            allowedChildrenNodes: [Tags.header, Tags.underline, Tags.strong, Tags.deleted, Tags.link,
+                Tags.list, Tags.blockQuote, Tags.em, Tags.pre],
             regExpStr: '((?:.*?\\n|$)*)',
             isMultiLine: true,
             textNodeChildrenAllowed: true,
@@ -86,7 +87,7 @@ describe('Parser tests', () => {
                     return {
                         tag: Tags.listElement,
                         matchedText: matchResult[index],
-                        innerText: matchResult[index+1],
+                        innerText: matchResult[index + 1],
                     };
                 }
             },
@@ -136,6 +137,66 @@ describe('Parser tests', () => {
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 1],
                         link: matchResult[index + 2]
+                    };
+                }
+            },
+        },
+        {
+            name: Tags.blockQuote,
+            allowedChildrenNodes: [Tags.quote],
+            regExpStr: '((?:>.*?\\n|$)+)',
+            matchGroups: 1,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.blockQuote,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index],
+                    };
+                }
+            },
+        },
+        {
+            name: Tags.quote,
+            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, Tags.em],
+            regExpStr: '((?:>.*?\\n|$)+)',
+            matchGroups: 1,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.blockQuote,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index],
+                    };
+                }
+            },
+        },
+        {
+            name: Tags.pre,
+            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, Tags.em],
+            regExpStr: '((?:>.*?\\n|$)+)',
+            matchGroups: 1,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.blockQuote,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index],
+                    };
+                }
+            },
+        },
+        {
+            name: Tags.em,
+            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, Tags.em],
+            regExpStr: '((?:>.*?\\n|$)+)',
+            matchGroups: 1,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.blockQuote,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index],
                     };
                 }
             },
@@ -282,16 +343,16 @@ describe('Parser tests', () => {
         expect(node.toString()).toBe(expectedResult);
     });
 
-   it('should parse text to html tags', () => {
-                const textToParse = ` * tekst1
+    it('should parse text to html tags', () => {
+        const textToParse = ` * tekst1
  * tekst2
  * tekst3`;
         const expectedResult = `<${HTMLTags.div}><${HTMLTags.ul}><${HTMLTags.li}>tekst1</${HTMLTags.li}>` +
-                   `<${HTMLTags.li}>tekst2</${HTMLTags.li}><${HTMLTags.li}>tekst3</${HTMLTags.li}>` +
-                   `</${HTMLTags.ul}></${HTMLTags.div}>`;
+            `<${HTMLTags.li}>tekst2</${HTMLTags.li}><${HTMLTags.li}>tekst3</${HTMLTags.li}>` +
+            `</${HTMLTags.ul}></${HTMLTags.div}>`;
         console.log(`expected Result: ${expectedResult}`);
-       const node: INode = parser.parse(textToParse);
-       expect(node.toString()).toBe(expectedResult);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
     });
 
 });

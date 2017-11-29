@@ -77,7 +77,7 @@ const parseText = (text: string, parentNode: INode, rules: IParserRule[], tags: 
             text = findAndAddTextNode(text, regExp, parentNode);
             text = findAndAddTagNode(text, regExp, tag, parentNode, rules, tags);
         }
-        parseText(text, parentNode, rules,tags);
+        parseText(text, parentNode, rules, tags);
     }
 };
 
@@ -117,6 +117,9 @@ const getChildrenRegexStr = (tagName: string, propertyName: string, array: IPars
             }
         }
     }
+    if (tab.length === 0) {
+        tab.push('($)');
+    }
     return tab.join('|');
 };
 
@@ -152,7 +155,7 @@ const findAndAddTagNode = (text: string, regexp: RegExp, tagName: string, parent
                 const newNode = NodeFactory.createNode(matchResult);
                 if (newNode) {
                     parentNode.addNode(newNode);
-                    parseText(matchResult.innerText, newNode, rules,tags);
+                    parseText(matchResult.innerText, newNode, rules, tags);
                     const len = matchResult.matchedText.length;
                     text = text.substring(len, text.length);
                 }

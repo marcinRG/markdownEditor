@@ -10,6 +10,9 @@ export class HTMLTags {
     public static ul: string = 'ul';
     public static li: string = 'li';
     public static em: string = 'em';
+    public static blockquote: string = 'blockquote';
+    public static quote: string = 'q';
+    public static pre: string = 'pre';
     public static underline: string = 'span';
     public static del: string = 'del';
     public static a: string = 'a';
