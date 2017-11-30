@@ -47,7 +47,7 @@ describe('Parser tests', () => {
         },
         {
             name: Tags.strong,
-            allowedChildrenNodes: [Tags.underline, Tags.deleted, Tags.link],
+            allowedChildrenNodes: [Tags.underline, Tags.deleted, Tags.link, Tags.em],
             regExpStr: '(\\*\\*(.*)\\*\\*)',
             textNodeChildrenAllowed: true,
             matchGroups: 2,
@@ -64,7 +64,7 @@ describe('Parser tests', () => {
         {
             name: Tags.list,
             allowedChildrenNodes: [Tags.listElement],
-            regExpStr: '(((?:\\s?\\*\\s.*?(?:\\n|$)))+)',
+            regExpStr: '((?:\\s?\\*\\s.*?(?:\\n|$))+)',
             isMultiLine: true,
             matchGroups: 1,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
@@ -79,8 +79,8 @@ describe('Parser tests', () => {
         },
         {
             name: Tags.listElement,
-            allowedChildrenNodes: [Tags.underline, Tags.link, Tags.deleted, Tags.strong],
-            regExpStr: '((?:\\s?\\*\\s(.*?)(?:\\n|$)))',
+            allowedChildrenNodes: [Tags.underline, Tags.link, Tags.deleted, Tags.strong, Tags.em],
+            regExpStr: '(\\s?\\*\\s(.*?)(?:\\n|$))',
             matchGroups: 2,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
@@ -126,7 +126,7 @@ describe('Parser tests', () => {
         },
         {
             name: Tags.link,
-            allowedChildrenNodes: [Tags.deleted, Tags.strong, Tags.underline],
+            allowedChildrenNodes: [],
             regExpStr: '(\\((.*)\\)\\[((?:https?\\:\\/\\/)?.*)])',
             textNodeChildrenAllowed: true,
             matchGroups: 3,
@@ -144,7 +144,7 @@ describe('Parser tests', () => {
         {
             name: Tags.blockQuote,
             allowedChildrenNodes: [Tags.quote],
-            regExpStr: '((?:>.*?\\n|$)+)',
+            regExpStr: '((?:>.*?(?:\\n|$))+)',
             matchGroups: 1,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
@@ -158,45 +158,45 @@ describe('Parser tests', () => {
         },
         {
             name: Tags.quote,
-            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, Tags.em],
-            regExpStr: '((?:>.*?\\n|$)+)',
-            matchGroups: 1,
+            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, Tags.em, Tags.link],
+            regExpStr: '(>(.*?)(?:\\n|$))',
+            matchGroups: 2,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: Tags.blockQuote,
+                        tag: Tags.quote,
                         matchedText: matchResult[index],
-                        innerText: matchResult[index],
+                        innerText: matchResult[index + 1],
                     };
                 }
             },
         },
         {
             name: Tags.pre,
-            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, Tags.em],
-            regExpStr: '((?:>.*?\\n|$)+)',
-            matchGroups: 1,
+            allowedChildrenNodes: [],
+            regExpStr: '((?:\'\'\'\\n?)((?:.|\\s)*?)(?:\'\'\'\\n?))',
+            matchGroups: 2,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: Tags.blockQuote,
+                        tag: Tags.pre,
                         matchedText: matchResult[index],
-                        innerText: matchResult[index],
+                        innerText: matchResult[index + 1],
                     };
                 }
             },
         },
         {
             name: Tags.em,
-            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, Tags.em],
-            regExpStr: '((?:>.*?\\n|$)+)',
-            matchGroups: 1,
+            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, Tags.link],
+            regExpStr: '(\\/\\/(.*)\\/\\/)',
+            matchGroups: 2,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
                 if (matchResult[index]) {
                     return {
-                        tag: Tags.blockQuote,
+                        tag: Tags.em,
                         matchedText: matchResult[index],
-                        innerText: matchResult[index],
+                        innerText: matchResult[index + 1],
                     };
                 }
             },
@@ -251,6 +251,26 @@ describe('Parser tests', () => {
             tag: Tags.link,
             htmlTag: HTMLTags.a,
         },
+        {
+            tag: Tags.pre,
+            htmlTag: HTMLTags.pre,
+        },
+        {
+            tag: Tags.blockQuote,
+            htmlTag: HTMLTags.blockquote,
+        },
+        {
+            tag: Tags.quote,
+            htmlTag: HTMLTags.quote,
+        },
+        {
+            tag: Tags.em,
+            htmlTag: HTMLTags.em
+        },
+        {
+            tag: Tags.deleted,
+            htmlTag: HTMLTags.del
+        }
     ];
     const parser = new Parser(parserRules, tags);
 
@@ -314,7 +334,7 @@ describe('Parser tests', () => {
         expect(node.toString()).toBe(expectedResult);
     });
 
-    it('should parse text to html tags', () => {
+    it('should parse text to html', () => {
         const textToParse = `Jakis tekst # Weekly **JavaScript** Challenge #9`;
         const expectedResult = `<${HTMLTags.div}>Jakis tekst <${HTMLTags.h1}>` +
             `Weekly <${HTMLTags.strong}>JavaScript</${HTMLTags.strong}> Challenge #9</${HTMLTags.h1}></${HTMLTags.div}>`;
@@ -323,7 +343,7 @@ describe('Parser tests', () => {
         expect(node.toString()).toBe(expectedResult);
     });
 
-    it('should parse text to html tags', () => {
+    it('should parse text to html', () => {
         const textToParse = `Jakis tekst __JavaScript__ Challenge #9`;
         const property = new Property('class', 'underline');
         const expectedResult = `<${HTMLTags.div}>Jakis tekst ` +
@@ -333,7 +353,7 @@ describe('Parser tests', () => {
         expect(node.toString()).toBe(expectedResult);
     });
 
-    it('should parse text to html tags', () => {
+    it('should parse text to html', () => {
         const textToParse = `Jakis tekst (マクロスMACROSS 82-99)[https://www.youtube.com/watch?v=idipMrfAZHk]`;
         const expectedResult = `<${HTMLTags.div}>Jakis tekst ` +
             `<${HTMLTags.a} href="https://www.youtube.com/watch?v=idipMrfAZHk">` +
@@ -343,13 +363,37 @@ describe('Parser tests', () => {
         expect(node.toString()).toBe(expectedResult);
     });
 
-    it('should parse text to html tags', () => {
+    it('should parse text to html', () => {
         const textToParse = ` * tekst1
  * tekst2
  * tekst3`;
         const expectedResult = `<${HTMLTags.div}><${HTMLTags.ul}><${HTMLTags.li}>tekst1</${HTMLTags.li}>` +
             `<${HTMLTags.li}>tekst2</${HTMLTags.li}><${HTMLTags.li}>tekst3</${HTMLTags.li}>` +
             `</${HTMLTags.ul}></${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
+    });
+
+    it('should parse text to html', () => {
+        const textToParse = ` Jakis tekst //costam// inny tekst`;
+        const expectedResult = `<${HTMLTags.div}> Jakis tekst <${HTMLTags.em}>` +
+            `costam</${HTMLTags.em}> inny tekst</${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
+    });
+
+    it('should parse text to html', () => {
+        const textToParse = `'''
+Jakis tekst
+//costam//
+inny tekst
+'''`;
+        const expectedResult = `<${HTMLTags.div}><${HTMLTags.pre}>Jakis tekst
+//costam//
+inny tekst
+</${HTMLTags.pre}></${HTMLTags.div}>`;
         console.log(`expected Result: ${expectedResult}`);
         const node: INode = parser.parse(textToParse);
         expect(node.toString()).toBe(expectedResult);
