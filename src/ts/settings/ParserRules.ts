@@ -6,8 +6,9 @@ export class ParserRules {
     public static rules: IParserRule[] = [
         {
             name: Tags.all,
-            allowedChildrenNodes: ['header', 'underline', 'strong', 'deleted', 'list'],
-            regExpStr: '((?:.*?\\n|$)*)',
+            allowedChildrenNodes: [Tags.header, Tags.underline, Tags.strong, Tags.deleted, Tags.link,
+                Tags.list, Tags.blockQuote, Tags.em, Tags.pre],
+            regExpStr: '((?:.*?\\n|$)+)',
             isMultiLine: true,
             textNodeChildrenAllowed: true,
             matchGroups: 1,
@@ -40,7 +41,7 @@ export class ParserRules {
         },
         {
             name: Tags.strong,
-            allowedChildrenNodes: ['underline', 'link', 'deleted'],
+            allowedChildrenNodes: [Tags.underline, Tags.deleted, Tags.link, Tags.em],
             regExpStr: '(\\*\\*(.*)\\*\\*)',
             textNodeChildrenAllowed: true,
             matchGroups: 2,
@@ -56,8 +57,8 @@ export class ParserRules {
         },
         {
             name: Tags.list,
-            allowedChildrenNodes: ['li'],
-            regExpStr: '((?:\\s?\\*\\s.*?\\n|$)+)',
+            allowedChildrenNodes: [Tags.listElement],
+            regExpStr: '((?:\\s?\\*\\s.*?(?:\\n|$))+)',
             isMultiLine: true,
             matchGroups: 1,
             values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
@@ -71,8 +72,23 @@ export class ParserRules {
             },
         },
         {
+            name: Tags.listElement,
+            allowedChildrenNodes: [Tags.underline, Tags.link, Tags.deleted, Tags.strong, Tags.em],
+            regExpStr: '(\\s?\\*\\s(.*?)(?:\\n|$))',
+            matchGroups: 2,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.listElement,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index + 1],
+                    };
+                }
+            },
+        },
+        {
             name: Tags.underline,
-            allowedChildrenNodes: [],
+            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.link],
             regExpStr: '(__(.*)__)',
             textNodeChildrenAllowed: true,
             matchGroups: 2,
@@ -88,7 +104,7 @@ export class ParserRules {
         },
         {
             name: Tags.deleted,
-            allowedChildrenNodes: [],
+            allowedChildrenNodes: [Tags.strong, Tags.link, Tags.underline],
             regExpStr: '(--(.*)--)',
             textNodeChildrenAllowed: true,
             matchGroups: 2,
@@ -96,6 +112,83 @@ export class ParserRules {
                 if (matchResult[index]) {
                     return {
                         tag: Tags.deleted,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index + 1],
+                    };
+                }
+            },
+        },
+        {
+            name: Tags.link,
+            allowedChildrenNodes: [],
+            regExpStr: '(\\((.*)\\)\\[((?:https?\\:\\/\\/)?.*)])',
+            textNodeChildrenAllowed: true,
+            matchGroups: 3,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.link,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index + 1],
+                        link: matchResult[index + 2]
+                    };
+                }
+            },
+        },
+        {
+            name: Tags.blockQuote,
+            allowedChildrenNodes: [Tags.quote],
+            regExpStr: '((?:>.*?(?:\\n|$))+)',
+            matchGroups: 1,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.blockQuote,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index],
+                    };
+                }
+            },
+        },
+        {
+            name: Tags.quote,
+            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, Tags.em, Tags.link],
+            regExpStr: '(>(.*?)(?:\\n|$))',
+            matchGroups: 2,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.quote,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index + 1],
+                    };
+                }
+            },
+        },
+        {
+            name: Tags.pre,
+            allowedChildrenNodes: [],
+            regExpStr: '((?:\'\'\'\\n?)((?:.|\\s)*?)(?:\'\'\'\\n?))',
+            matchGroups: 2,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.pre,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index + 1],
+                    };
+                }
+            },
+        },
+        {
+            name: Tags.em,
+            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, Tags.link],
+            regExpStr: '(\\/\\/(.*)\\/\\/)',
+            matchGroups: 2,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.em,
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 1],
                     };

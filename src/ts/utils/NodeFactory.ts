@@ -1,12 +1,13 @@
-import {IMatchResult} from './interfaces/IMatchResult';
-import {INode} from './interfaces/INode';
-import {TagNode} from './TagNode';
+import {IMatchResult} from '../model/interfaces/IMatchResult';
+import {INode} from '../model/interfaces/INode';
+import {TagNode} from '../model/TagNode';
 import {Tags} from '../settings/Tags';
 import {HTMLTags} from '../settings/HTMLTags';
-import {Property} from './Property';
+import {Property} from '../model/Property';
+import {ICreateNode} from '../model/interfaces/ICreateNode';
 
-export class NodeFactory {
-    public static createNode(matchResults: IMatchResult): INode {
+export class NodeFactory implements ICreateNode {
+    public createNode(matchResults: IMatchResult): INode {
         return createHeader(matchResults);
     }
 }
@@ -19,7 +20,6 @@ const createHeader = (matchResult: IMatchResult): INode => {
     }
     return createStrong(matchResult);
 };
-
 //public static strong: string = 'strong';
 const createStrong = (matchResult: IMatchResult): INode => {
     if (matchResult && (matchResult.tag === Tags.strong)) {
@@ -27,7 +27,6 @@ const createStrong = (matchResult: IMatchResult): INode => {
     }
     return createUnderline(matchResult);
 };
-
 //public static underline: string = 'underline';
 const createUnderline = (matchResult: IMatchResult): INode => {
     if (matchResult && (matchResult.tag === Tags.underline)) {
@@ -67,7 +66,6 @@ const createListElement = (matchResult: IMatchResult): INode => {
     }
     return createEmphasis(matchResult);
 };
-
 //public static em: string = 'emphasis';
 const createEmphasis = (matchResult: IMatchResult): INode => {
     if (matchResult && (matchResult.tag === Tags.em)) {
@@ -94,5 +92,4 @@ const createPre = (matchResult: IMatchResult): INode => {
     if (matchResult && (matchResult.tag === Tags.pre)) {
         return new TagNode(HTMLTags.pre);
     }
-    return null;
 };

@@ -1,8 +1,9 @@
 import {HTMLTags} from './HTMLTags';
 import {Tags} from './Tags';
+import {ITag} from '../model/interfaces/ITag';
 
 export class TagsArray {
-    public static tags = [
+    public static tags: ITag[] = [
         {
             tag: Tags.all,
             htmlTag: HTMLTags.div,
@@ -51,5 +52,25 @@ export class TagsArray {
             tag: Tags.link,
             htmlTag: HTMLTags.a,
         },
+        {
+            tag: Tags.pre,
+            htmlTag: HTMLTags.pre,
+        },
+        {
+            tag: Tags.blockQuote,
+            htmlTag: HTMLTags.blockquote,
+        },
+        {
+            tag: Tags.quote,
+            htmlTag: HTMLTags.quote,
+        },
+        {
+            tag: Tags.em,
+            htmlTag: HTMLTags.em
+        },
+        {
+            tag: Tags.deleted,
+            htmlTag: HTMLTags.del
+        }
     ];
 }

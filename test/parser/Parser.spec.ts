@@ -1,4 +1,4 @@
-import {Parser} from '../../src/ts/services/Parser';
+import {Parser} from '../../src/ts/utils/Parser';
 import {HTMLTags} from '../../src/ts/settings/HTMLTags';
 import {IParserRule} from '../../src/ts/model/interfaces/IParserRule';
 import {IMatchResult} from '../../src/ts/model/interfaces/IMatchResult';
@@ -6,6 +6,7 @@ import {Tags} from '../../src/ts/settings/Tags';
 import {INode} from '../../src/ts/model/interfaces/INode';
 import {ITag} from '../../src/ts/model/interfaces/ITag';
 import {Property} from '../../src/ts/model/Property';
+import {NodeFactory} from '../../src/ts/utils/NodeFactory';
 
 describe('Parser tests', () => {
 
@@ -14,7 +15,7 @@ describe('Parser tests', () => {
             name: Tags.all,
             allowedChildrenNodes: [Tags.header, Tags.underline, Tags.strong, Tags.deleted, Tags.link,
                 Tags.list, Tags.blockQuote, Tags.em, Tags.pre],
-            regExpStr: '((?:.*?\\n|$)*)',
+            regExpStr: '((?:.*?\\n|$)+)',
             isMultiLine: true,
             textNodeChildrenAllowed: true,
             matchGroups: 1,
@@ -272,7 +273,8 @@ describe('Parser tests', () => {
             htmlTag: HTMLTags.del
         }
     ];
-    const parser = new Parser(parserRules, tags);
+    const tagsFactory = new NodeFactory();
+    const parser = new Parser(parserRules, tags, tagsFactory);
 
     it('should exist and have certain properties', () => {
         expect(parser).toBeDefined();
@@ -399,4 +401,30 @@ inny tekst
         expect(node.toString()).toBe(expectedResult);
     });
 
+    it('should parse text to html', () => {
+        const textToParse = `>Jakis tekst
+>costam
+>inny tekst`;
+        const expectedResult = `<${HTMLTags.div}><${HTMLTags.blockquote}><${HTMLTags.quote}>Jakis tekst</${HTMLTags.quote}>` +
+            `<${HTMLTags.quote}>costam</${HTMLTags.quote}><${HTMLTags.quote}>inny tekst</${HTMLTags.quote}></${HTMLTags.blockquote}></${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
+    });
+
+    it('should parse text to html', () => {
+        const textToParse = `Jakis tekst //something// end`;
+        const expectedResult = `<${HTMLTags.div}>Jakis tekst <${HTMLTags.em}>something</${HTMLTags.em}> end</${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
+    });
+
+    it('should parse text to html', () => {
+        const textToParse = `begin --something-- end`;
+        const expectedResult = `<${HTMLTags.div}>begin <${HTMLTags.del}>something</${HTMLTags.del}> end</${HTMLTags.div}>`;
+        console.log(`expected Result: ${expectedResult}`);
+        const node: INode = parser.parse(textToParse);
+        expect(node.toString()).toBe(expectedResult);
+    });
 });

@@ -1,5 +1,6 @@
-export class Storage {
-    public static storageAvailable(type) {
+export class StorageUtils {
+
+    public storageAvailable(type) {
         try {
             const storage = window[type];
             const x = '__storage_test__';
@@ -11,7 +12,19 @@ export class Storage {
         }
     }
 
-    public static readValue(key): any {
+    public clearAll(): void {
+        if (this.storageAvailable('localStorage')) {
+            localStorage.clear();
+        }
+    }
+
+    public remove(key: string) {
+        if (this.storageAvailable('localStorage')) {
+            localStorage.removeItem(key);
+        }
+    }
+
+    public readValue(key: string): any {
         if (this.storageAvailable('localStorage')) {
             const val = JSON.parse(localStorage.getItem(key));
             if (val) {
@@ -22,7 +35,7 @@ export class Storage {
         return null;
     }
 
-    public static writeValue(key, val) {
+    public writeValue(key: string, val: any) {
         if (this.storageAvailable('localStorage')) {
             const value = JSON.stringify(val);
             localStorage.setItem(key, value);
