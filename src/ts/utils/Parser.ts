@@ -81,8 +81,7 @@ const parseText = (text: string, parentNode: INode, rules: IParserRule[], tags: 
             const regExp = new RegExp(getChildrenRegexStr(rule.name, 'name', rules), 'i');
             text = findAndAddTextNode(text, regExp, parentNode);
             text = findAndAddTagNode(text, regExp, rule.name, parentNode, rules, tags, tagsFactory);
-        }
-        else {
+        } else {
             text = createTextNode(text, text, parentNode);
         }
         parseText(text, parentNode, rules, tags, tagsFactory);
@@ -105,7 +104,8 @@ const findInArray = (value: string, propertyName: string, array: any[]): number 
     return i;
 };
 
-const findInArrays = (val1: string, property11: string, property12: string, array1: any[], property2: string, array2: any[]) => {
+const findInArrays = (val1: string, property11: string, property12: string,
+                      array1: any[], property2: string, array2: any[]) => {
     const pos1 = findInArray(val1, property11, array1);
     if (pos1 >= 0) {
         const pos2 = findInArray(array1[pos1][property12], property2, array2);
@@ -149,7 +149,8 @@ const findAndAddTextNode = (text: string, regexp: RegExp, parentNode: INode): st
     return createTextNode(text, txtNew, parentNode);
 };
 
-const findAndAddTagNode = (text: string, regexp: RegExp, tagName: string, parentNode: INode, rules: IParserRule[], tags: ITag[], tagsFactory: ICreateNode): string => {
+const findAndAddTagNode = (text: string, regexp: RegExp, tagName: string, parentNode: INode,
+                           rules: IParserRule[], tags: ITag[], tagsFactory: ICreateNode): string => {
     const results = text.match(regexp);
     if (results) {
         const matchResult: IMatchResult = getMatchResults(results, tagName, rules);
@@ -160,12 +161,10 @@ const findAndAddTagNode = (text: string, regexp: RegExp, tagName: string, parent
                 parseText(matchResult.innerText, newNode, rules, tags, tagsFactory);
                 const len = matchResult.matchedText.length;
                 text = text.substring(len, text.length);
-            }
-            else {
+            } else {
                 text = createTextNode(text, matchResult.matchedText, parentNode);
             }
-        }
-        else {
+        } else {
             text = createTextNode(text, results[0], parentNode);
         }
     }
@@ -214,7 +213,7 @@ const findFirstInMatchResult = (tab: string[]) => {
 
 const getExistingChildrenNodes = (position: number, rules: IParserRule[]) => {
     if (position <= rules.length) {
-        let tab = [];
+        const tab = [];
         const childrenRules = rules[position].allowedChildrenNodes;
         for (const elem of childrenRules) {
             const regexStr = getRegexStr(elem, rules);

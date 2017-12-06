@@ -130,7 +130,7 @@ export class ParserRules {
                         tag: Tags.link,
                         matchedText: matchResult[index],
                         innerText: matchResult[index + 1],
-                        link: matchResult[index + 2]
+                        link: matchResult[index + 2],
                     };
                 }
             },

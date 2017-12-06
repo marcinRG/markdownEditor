@@ -66,11 +66,11 @@ export class TagsArray {
         },
         {
             tag: Tags.em,
-            htmlTag: HTMLTags.em
+            htmlTag: HTMLTags.em,
         },
         {
             tag: Tags.deleted,
-            htmlTag: HTMLTags.del
-        }
+            htmlTag: HTMLTags.del,
+        },
     ];
 }

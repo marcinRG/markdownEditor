@@ -69,7 +69,7 @@ gulp.task('browserify-inject-js', ['browserify-compil'], function () {
 
 gulp.task('run-dev', ['browserify-inject-js', 'inject-css', 'test-run'], function () {
     serve(true);
-})
+});
 
 gulp.task('help', $.taskListing);
 
@@ -137,6 +137,5 @@ function runTests(done) {
         configFile: __dirname + '/karma.conf.js',
     }, function (exitCode) {
         done();
-        process.exit(exitCode);
     }).start();
 }

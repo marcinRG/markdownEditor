@@ -1,17 +1,38 @@
-//import {Storage} from './utils/Storage';
 import * as Promise from 'bluebird';
+import {AppSettings} from './settings/AppSettings';
+import {IParse} from './model/interfaces/IParse';
+import {IStorage} from './model/interfaces/IStorage';
+import {parseService} from './services/parse.service';
+import {storageService} from './services/storage.service';
 
-const PARSER_APP_KEY = '_valxy_666999_ParserApp';
-
-export class App {
+class App {
 
     private button: HTMLButtonElement;
-    private textArea: HTMLTextAreaElement;
+    private input: HTMLTextAreaElement;
+    private output: HTMLElement;
+    private parser: IParse;
+    private storage: IStorage;
 
     constructor() {
+        //this.input = <HTMLTextAreaElement> document.querySelector(AppSettings.textInputQuerySelector);
+        //this.output = <HTMLElement> document.querySelector(AppSettings.textOutputQuerySelector);
+        //this.button = <HTMLButtonElement> document.querySelector(AppSettings.buttonQuerySelector);
     }
 
-    public testFunc() {
+    public setParser(parser: IParse) {
+        if (parser) {
+            this.parser = parser;
+        }
+    }
+
+    public setStorage(storage: IStorage) {
+        if (storage) {
+            this.storage = storage;
+        }
+    }
+
+    public run() {
+        console.log('run');
     }
 
     //constructor() {
@@ -59,3 +80,5 @@ export class App {
 }
 
 const app = new App();
+app.setParser(parseService);
+app.setStorage(storageService);

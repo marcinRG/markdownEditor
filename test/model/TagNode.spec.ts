@@ -1,7 +1,7 @@
 import {TagNode} from '../../src/ts/model/TagNode';
 import {HTMLTags} from '../../src/ts/settings/HTMLTags';
 
-xdescribe('TagNode tests', () => {
+describe('TagNode tests', () => {
     it('should exist & method toString should return value', () => {
         console.log('should exist & method toString should return value');
         const tagNode = new TagNode(HTMLTags.div);
