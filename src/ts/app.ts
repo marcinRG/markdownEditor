@@ -12,11 +12,21 @@ class App {
     private output: HTMLElement;
     private parser: IParse;
     private storage: IStorage;
+    private delay: number;
+    private debouncedFunc: any;
 
     constructor() {
-        //this.input = <HTMLTextAreaElement> document.querySelector(AppSettings.textInputQuerySelector);
-        //this.output = <HTMLElement> document.querySelector(AppSettings.textOutputQuerySelector);
-        //this.button = <HTMLButtonElement> document.querySelector(AppSettings.buttonQuerySelector);
+        this.input = <HTMLTextAreaElement> document.querySelector(AppSettings.textInputQuerySelector);
+        this.output = <HTMLElement> document.querySelector(AppSettings.textOutputQuerySelector);
+        this.button = <HTMLButtonElement> document.querySelector(AppSettings.buttonQuerySelector);
+        this.delay = AppSettings.debounceTime;
+        // this.debouncedFunc = debounce((value) => {
+        //     this.doSomething(value);
+        // }, this.delay, false);
+        this.debouncedFunc = debounce((value: string) => {
+            this.doSomething(value);
+        }, this.delay);
+
     }
 
     public setParser(parser: IParse) {
@@ -33,6 +43,32 @@ class App {
 
     public run() {
         console.log('run');
+        console.log(this.button);
+        console.log(this.output);
+        console.log(this.input);
+        this.addListenerToInputTextArea();
+        this.addListenerToButton();
+        console.log('begin');
+    }
+
+    private addListenerToInputTextArea() {
+        if (this.input) {
+            this.input.addEventListener('input', () => {
+                this.debouncedFunc(this.input.value);
+            });
+        }
+    }
+
+    private doSomething(val: string) {
+        console.log(val);
+    }
+
+    private addListenerToButton() {
+        if (this.button) {
+            this.button.addEventListener('click', () => {
+                console.log(this.input.value);
+            });
+        }
     }
 
     //constructor() {
@@ -79,6 +115,19 @@ class App {
     // }
 }
 
+const debounce = <A>(f: (a: A) => void, delay: number) => {
+    let timer: number = null;
+    return (a: A) => {
+        if (!timer) {
+            timer = setTimeout(() => f(a), delay);
+        } else {
+            clearTimeout(timer);
+            timer = setTimeout(() => f(a), delay);
+        }
+    };
+};
+
 const app = new App();
 app.setParser(parseService);
 app.setStorage(storageService);
+app.run();
