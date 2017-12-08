@@ -27,8 +27,9 @@
 .input-elem {
   @include set-to-zero;
   @include block-border-box;
-  font-family: Consolas, sans-serif;
+  @include oxygen;
   display: block;
+  font-size: .75em;
   width: 40%;
   float: left;
   height: 100%;
@@ -43,6 +44,7 @@
   @include set-to-zero;
   @include block-border-box;
   background-color: $color-100;
+  color: $color-900;
   display: block;
   padding: .5em;
   width: 60%;
@@ -51,39 +53,38 @@
   overflow: auto;
 
   h1 {
-    @include before-elem('H1', 1.7em);
+    @include before-elem(1.5em);
     font-size: 2.2em;
   }
 
   h2 {
-    @include before-elem('H2', 1.5em);
+    @include before-elem(1.5em);
     font-size: 1.9em;
   }
 
   h3 {
-    @include before-elem('H3', 1.4em);
+    @include before-elem(1.4em);
     font-size: 1.7em;
   }
 
   h4 {
-    @include before-elem('H4', 1.4em);
+    @include before-elem(1.4em);
     font-size: 1.5em;
   }
 
   h5 {
-    @include before-elem('H5', 1.4em);
+    @include before-elem(1.4em);
     font-size: 1.2em;
   }
 
   h6 {
-    @include before-elem('H6', 1.4em);
+    @include before-elem(1.4em);
     font-size: .95em;
   }
 
   ul {
-    margin: 1em;
     display: block;
-    list-style: circle inside;
+    margin: 1em .5em 1em 0;
     background-color: $color-300;
 
     li {
@@ -93,7 +94,7 @@
       padding: .6em 0 .6em 2em;
       background-color: $color-300;
       position: relative;
-      font-size: 0.95em;
+      font-size: .95em;
 
       &::before {
         display: inline-block;
@@ -101,11 +102,99 @@
         top: 17.5%;
         width: 2em;
         content: '\2740';
-        color: $color-600;
+        color: $color-800;
         position: absolute;
         left: 0;
       }
+    }
+  }
 
+  a {
+    background-color: $color-600;
+    font-weight: 300;
+    color: $color-50;
+    text-decoration: underline;
+    position: relative;
+    padding: .2em .2em .2em 25px;
+    display: inline-block;
+
+    &::before {
+      height: 100%;
+      display: inline-block;
+      position: absolute;
+      font-size: 15px;
+      width: 25px;
+      top: 2px;
+      left: 0;
+      text-align: center;
+      color: $color-800;
+      content: '\01f517';
+    }
+  }
+
+  .underline {
+    display: inline-block;
+    color: $color-900;
+    border-bottom: 2px $color-900 solid;
+  }
+
+  pre {
+    @include oxygen;
+    background-color: $color-300;
+    color: $color-900;
+    font-size: .85em;
+    text-align: left;
+    padding: 2.8em .3em .3em;
+    margin: .5em 0;
+    border-bottom: 5px $color-900 solid;
+    position: relative;
+
+    &::before {
+      @include block-border-box;
+      background-color: $color-900;
+      position: absolute;
+      padding: .5em 0 0 .3em;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2.5em;
+      content: '\25a7';
+      color: $color-50;
+    }
+  }
+
+  blockquote {
+    @include block-border-box;
+    text-align: center;
+    margin: .5em 0;
+    padding: .7em;
+    background-color: $color-900;
+    color: $color-50;
+    font-weight: 100;
+    font-style: italic;
+
+    &::before {
+      @include block-border-box;
+      text-align: left;
+      font-size: 2em;
+      content: '\201C';
+    }
+
+    &::after {
+      @include block-border-box;
+      text-align: right;
+      font-size: 2em;
+      content: '\201E';
+    }
+
+    q {
+      background-color: $color-900;
+      color: $color-50;
+
+      &::after,
+      &::before {
+        display: none;
+      }
     }
   }
 

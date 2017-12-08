@@ -11,7 +11,7 @@ var del = require('del');
 var settings = require('./gulp.settings/settings');
 
 gulp.task('clean-styles', function (done) {
-    var files = settings.app.cssFolder + '*.css';
+    var files = settings.app.cssStyles + '*.css';
     clean(files, done);
 });
 
@@ -65,6 +65,36 @@ gulp.task('browserify-inject-js', ['browserify-compil'], function () {
     return gulp.src(settings.app.index)
         .pipe($.inject(gulp.src(settings.app.compiledJS, { read: false }), { relative: true }))
         .pipe(gulp.dest(settings.app.client));
+});
+
+gulp.task('build-prepare', ['browserify-inject-js', 'inject-css', 'test-run'], function () {
+});
+
+gulp.task('dist-optimize', ['build-prepare','copyToBuild-fonts'], function () {
+    var cleanCss = require('gulp-clean-css');
+    return gulp.src(settings.app.index)
+        .pipe($.plumber())
+        .pipe($.useref())
+        .pipe($.if('*.js', $.uglify()))
+        .pipe($.if('*.css', cleanCss()))
+        .pipe(gulp.dest(settings.build.path));
+});
+
+
+gulp.task('copyToBuild-fonts', function () {
+    msg('Kopiowanie fontów');
+    return gulp.src(settings.app.fontsSrc)
+        .pipe(gulp.dest(settings.build.fontsPath));
+});
+
+gulp.task('copyToBuild-fonts', function () {
+    msg('Kopiowanie fontów');
+    return gulp.src(settings.app.fontsSrc)
+        .pipe(gulp.dest(settings.build.fontsPath));
+});
+
+gulp.task('run-dist', ['dist-optimize'], function () {
+    serve(false);
 });
 
 gulp.task('run-dev', ['browserify-inject-js', 'inject-css', 'test-run'], function () {

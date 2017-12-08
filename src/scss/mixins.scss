@@ -11,7 +11,8 @@
   display: block;
 }
 
-@mixin before-elem($text, $pad) {
+@mixin before-elem($pad) {
+  @include block-border-box;
   position: relative;
   padding-left: $pad + .2em;
   background-color: $color-200;
@@ -19,12 +20,14 @@
   font-weight: 400;
 
   &::before {
-    background-color: $color-300;
-    color: $color-100;
-    display: block;
-    content: $text;
+    @include block-border-box;
+    padding: .1em;
+    background-color: $color-400;
+    color: $color-50;
+    content: '\210B';
     font-weight: 300;
-    font-size: .95em;
+    font-size: .9em;
+    text-align: left;
     position: absolute;
     top: 0;
     left: 0;
