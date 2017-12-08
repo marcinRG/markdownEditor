@@ -1,0 +1,112 @@
+@import 'variables';
+@import 'mixins';
+@import 'common';
+
+.app-header {
+
+  h1 {
+    padding: .5em 0 .75em .5em;
+    color: $color-100;
+    background-color: $color-900;
+    font-size: 2em;
+  }
+
+}
+
+.app-section {
+  @include set-to-zero;
+  @include block-border-box;
+  height: 80vh;
+  overflow: hidden;
+
+  &::after {
+    clear: both;
+  }
+}
+
+.input-elem {
+  @include set-to-zero;
+  @include block-border-box;
+  font-family: Consolas, sans-serif;
+  display: block;
+  width: 40%;
+  float: left;
+  height: 100%;
+  overflow: auto;
+  outline: none;
+  padding: .5em;
+  resize: none;
+  background-color: $color-200;
+}
+
+.output-elem {
+  @include set-to-zero;
+  @include block-border-box;
+  background-color: $color-100;
+  display: block;
+  padding: .5em;
+  width: 60%;
+  float: right;
+  height: 100%;
+  overflow: auto;
+
+  h1 {
+    @include before-elem('H1', 1.7em);
+    font-size: 2.2em;
+  }
+
+  h2 {
+    @include before-elem('H2', 1.5em);
+    font-size: 1.9em;
+  }
+
+  h3 {
+    @include before-elem('H3', 1.4em);
+    font-size: 1.7em;
+  }
+
+  h4 {
+    @include before-elem('H4', 1.4em);
+    font-size: 1.5em;
+  }
+
+  h5 {
+    @include before-elem('H5', 1.4em);
+    font-size: 1.2em;
+  }
+
+  h6 {
+    @include before-elem('H6', 1.4em);
+    font-size: .95em;
+  }
+
+  ul {
+    margin: 1em;
+    display: block;
+    list-style: circle inside;
+    background-color: $color-300;
+
+    li {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: .6em 0 .6em 2em;
+      background-color: $color-300;
+      position: relative;
+      font-size: 0.95em;
+
+      &::before {
+        display: inline-block;
+        text-align: center;
+        top: 17.5%;
+        width: 2em;
+        content: '\2740';
+        color: $color-600;
+        position: absolute;
+        left: 0;
+      }
+
+    }
+  }
+
+}

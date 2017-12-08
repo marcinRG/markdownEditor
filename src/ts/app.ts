@@ -7,26 +7,20 @@ import {storageService} from './services/storage.service';
 
 class App {
 
-    private button: HTMLButtonElement;
     private input: HTMLTextAreaElement;
     private output: HTMLElement;
     private parser: IParse;
     private storage: IStorage;
     private delay: number;
-    private debouncedFunc: any;
+    private debouncedParseAndAddToOutput: any;
 
     constructor() {
         this.input = <HTMLTextAreaElement> document.querySelector(AppSettings.textInputQuerySelector);
         this.output = <HTMLElement> document.querySelector(AppSettings.textOutputQuerySelector);
-        this.button = <HTMLButtonElement> document.querySelector(AppSettings.buttonQuerySelector);
         this.delay = AppSettings.debounceTime;
-        // this.debouncedFunc = debounce((value) => {
-        //     this.doSomething(value);
-        // }, this.delay, false);
-        this.debouncedFunc = debounce((value: string) => {
-            this.doSomething(value);
+        this.debouncedParseAndAddToOutput = debounce<string>((value) => {
+            this.parseAndAddToOutput(value);
         }, this.delay);
-
     }
 
     public setParser(parser: IParse) {
@@ -42,78 +36,42 @@ class App {
     }
 
     public run() {
-        console.log('run');
-        console.log(this.button);
-        console.log(this.output);
-        console.log(this.input);
         this.addListenerToInputTextArea();
-        this.addListenerToButton();
-        console.log('begin');
+        setEnabled(false, this.input);
+        this.storage.read().then((val) => {
+            setValue(val, this.input);
+            setEnabled(true, this.input);
+            return val;
+        }).then((val) => {
+            this.parser.parse(val).then((val) => {
+                this.output.innerHTML = (val).toString();
+            });
+        });
     }
 
     private addListenerToInputTextArea() {
-        if (this.input) {
+        if (this.input && this.input instanceof HTMLTextAreaElement) {
             this.input.addEventListener('input', () => {
-                this.debouncedFunc(this.input.value);
+                this.debouncedParseAndAddToOutput(this.input.value);
             });
         }
     }
 
-    private doSomething(val: string) {
-        console.log(val);
+    private parseAndAddToOutput(val: string) {
+        Promise.all([this.storage.save(val), this.parser.parse(val)]).then((result) => {
+            this.output.innerHTML = result[1].toString();
+        }, (error) => {
+            this.output.innerHTML = createErrorMsg('Wystąpił błąd');
+        });
     }
-
-    private addListenerToButton() {
-        if (this.button) {
-            this.button.addEventListener('click', () => {
-                console.log(this.input.value);
-            });
-        }
-    }
-
-    //constructor() {
-    //     this.textArea = <HTMLTextAreaElement> document.getElementById('text2Parse');
-    //     this.button = <HTMLButtonElement> document.getElementById('appButton');
-    //     if (this.textArea && this.textArea.value) {
-    //         const storedValue = this.readFromStorage();
-    //         if (storedValue) {
-    //             this.textArea.value = this.readFromStorage();
-    //         }
-    //
-    //     }
-    //     this.addListenerToTextArea();
-    //     this.addListenerToButton();
-    // }
-    //
-    // private addListenerToTextArea() {
-    //     if (this.textArea) {
-    //         this.textArea.addEventListener('input', () => {
-    //             this.saveToStorage(this.textArea.value);
-    //         });
-    //     }
-    // }
-    //
-    // private addListenerToButton() {
-    //     if (this.button) {
-    //         this.button.addEventListener('click', () => {
-    //             this.parseText(this.textArea.value);
-    //         });
-    //     }
-    // }
-    //
-    // private parseText(text: string): void {
-    //     console.log(text);
-    //     //Parser.parseText(text);
-    // }
-    //
-    // private saveToStorage(text: string): void {
-    //     Storage.writeValue(PARSER_APP_KEY, text);
-    // }
-    //
-    // private readFromStorage(): string {
-    //     return Storage.readValue(PARSER_APP_KEY).toString();
-    // }
 }
+
+const createErrorMsg = (txt: string): string => {
+    const p = document.createElement('p');
+    p.classList.add('error-message');
+    p.textContent = txt;
+    return p.outerHTML;
+};
 
 const debounce = <A>(f: (a: A) => void, delay: number) => {
     let timer: number = null;
@@ -125,6 +83,18 @@ const debounce = <A>(f: (a: A) => void, delay: number) => {
             timer = setTimeout(() => f(a), delay);
         }
     };
+};
+
+const setEnabled = (val: boolean, elem: any) => {
+    if (elem) {
+        elem.disabled = !val;
+    }
+};
+
+const setValue = (val: string, elem: any) => {
+    if (elem) {
+        elem.value = val;
+    }
 };
 
 const app = new App();

@@ -1,0 +1,28 @@
+//fonts-mixins
+
+
+@mixin custom-font-properties($font-name, $font-file, $path) {
+  font-family: $font-name;
+  src: url('#{$path}#{$font-file}.eot');
+  src: url('#{$path}#{$font-file}.eot?#iefix') format('embedded-opentype'),
+  url('#{$path}#{$font-file}.woff2') format('woff2'),
+  url('#{$path}#{$font-file}.woff') format('woff'),
+  url('#{$path}#{$font-file}.ttf') format('truetype'),
+  url('#{$path}#{$font-file}.svg#icon') format('svg');
+}
+
+@mixin custom-font-mixin-simplified($font-name, $font-file, $path) {
+
+  @font-face {
+    @include custom-font-properties($font-name, $font-file, $path);
+  }
+}
+
+@mixin custom-font-mixin($font-name, $font-file, $weight, $style, $path) {
+
+  @font-face {
+    @include custom-font-properties($font-name, $font-file, $path);
+    font-style: $style;
+    font-weight: $weight;
+  }
+}

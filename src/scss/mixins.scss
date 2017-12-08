@@ -1,0 +1,34 @@
+@import 'variables';
+
+@mixin set-to-zero {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin block-border-box {
+  box-sizing: border-box;
+  display: block;
+}
+
+@mixin before-elem($text, $pad) {
+  position: relative;
+  padding-left: $pad + .2em;
+  background-color: $color-200;
+  margin-bottom: .2em;
+  font-weight: 400;
+
+  &::before {
+    background-color: $color-300;
+    color: $color-100;
+    display: block;
+    content: $text;
+    font-weight: 300;
+    font-size: .95em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: $pad;
+  }
+}
