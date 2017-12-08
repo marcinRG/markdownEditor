@@ -4,7 +4,7 @@ var ts = require("gulp-typescript");
 var tsProject = ts.createProject("tsconfig.json");
 var browserify = require("browserify");
 var source = require('vinyl-source-stream');
-var $ = require('gulp-load-plugins')({ lazy: true });
+var $ = require('gulp-load-plugins')({lazy: true});
 var sassLint = require('gulp-sass-lint');
 var tsify = require('tsify');
 var del = require('del');
@@ -63,14 +63,14 @@ gulp.task('browserify-compil', ['code-check'], function () {
 
 gulp.task('browserify-inject-js', ['browserify-compil'], function () {
     return gulp.src(settings.app.index)
-        .pipe($.inject(gulp.src(settings.app.compiledJS, { read: false }), { relative: true }))
+        .pipe($.inject(gulp.src(settings.app.compiledJS, {read: false}), {relative: true}))
         .pipe(gulp.dest(settings.app.client));
 });
 
 gulp.task('build-prepare', ['browserify-inject-js', 'inject-css', 'test-run'], function () {
 });
 
-gulp.task('dist-optimize', ['build-prepare','copyToBuild-fonts'], function () {
+gulp.task('dist-optimize', ['build-prepare', 'copyToBuild-fonts'], function () {
     var cleanCss = require('gulp-clean-css');
     return gulp.src(settings.app.index)
         .pipe($.plumber())
@@ -109,9 +109,9 @@ gulp.task('sass-watcher', function () {
     gulp.watch(settings.app.scssStyles, ['sass-compile', 'inject-css']);
 });
 
-gulp.task('inject-css', function () {
+gulp.task('inject-css', ['sass-compile'], function () {
     return gulp.src(settings.app.index)
-        .pipe($.inject(gulp.src(settings.app.cssFile, { read: false }), { relative: true }))
+        .pipe($.inject(gulp.src(settings.app.cssFile, {read: false}), {relative: true}))
         .pipe(gulp.dest(settings.app.client));
 });
 
