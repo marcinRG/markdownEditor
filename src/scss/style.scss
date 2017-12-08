@@ -16,11 +16,11 @@
 .app-section {
   @include set-to-zero;
   @include block-border-box;
-  height: 80vh;
   overflow: hidden;
 
   &::after {
     clear: both;
+
   }
 }
 
@@ -30,14 +30,22 @@
   @include oxygen;
   display: block;
   font-size: .75em;
-  width: 40%;
-  float: left;
-  height: 100%;
+  width: 100%;
   overflow: auto;
+  height: 80vh;
   outline: none;
   padding: .5em;
   resize: none;
   background-color: $color-200;
+
+  @media screen {
+    @media (min-width: $media-br-1) {
+      width: 40%;
+      float: left;
+    }
+  }
+
+
 }
 
 .output-elem {
@@ -47,10 +55,16 @@
   color: $color-900;
   display: block;
   padding: .5em;
-  width: 60%;
-  float: right;
-  height: 100%;
+  width: 100%;
   overflow: auto;
+  height: 80vh;
+
+  @media screen {
+    @media (min-width: $media-br-1) {
+      width: 60%;
+      float: right;
+    }
+  }
 
   h1 {
     @include before-elem(1.5em);
