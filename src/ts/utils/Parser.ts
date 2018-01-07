@@ -6,6 +6,7 @@ import {TextNode} from '../model/TextNode';
 import {IMatchResult} from '../model/interfaces/IMatchResult';
 import {ITag} from '../model/interfaces/ITag';
 import {ICreateNode} from '../model/interfaces/ICreateNode';
+import has = Reflect.has;
 
 export class Parser {
 
@@ -89,19 +90,11 @@ const parseText = (text: string, parentNode: INode, rules: IParserRule[], tags: 
 };
 
 const findInArray = (value: string, propertyName: string, array: any[]): number => {
-    let i = -1;
-    if (array && array.length) {
-        const val = array[0];
-        if (val.hasOwnProperty(propertyName)) {
-            for (i = 0; i < array.length; i++) {
-                if (array[i][propertyName] === value) {
-                    return i;
-                }
-            }
-            i = -1;
+    return array.findIndex((elem: any) => {
+        if (elem.hasOwnProperty(propertyName)) {
+            return elem[propertyName] === value;
         }
-    }
-    return i;
+    });
 };
 
 const findInArrays = (val1: string, property11: string, property12: string,
@@ -141,7 +134,6 @@ const getText = (text: string, regExp: RegExp): string => {
     if (results < 0) {
         return text;
     }
-    return null;
 };
 
 const findAndAddTextNode = (text: string, regexp: RegExp, parentNode: INode): string => {
@@ -171,7 +163,7 @@ const findAndAddTagNode = (text: string, regexp: RegExp, tagName: string, parent
     return text;
 };
 
-const createTextNode = (text: string, textToAdd: string, parentNode): string => {
+const createTextNode = (text: string, textToAdd: string, parentNode:INode): string => {
     if (textToAdd) {
         const len = (textToAdd && textToAdd.length) ? textToAdd.length : text.length;
         parentNode.addNode(new TextNode(textToAdd));

@@ -12,10 +12,6 @@ export class Collection<T extends IStringable> {
     }
 
     public toString(): string {
-        let str: string = '';
-        for (const elem of this.array) {
-            str += elem.toString();
-        }
-        return str;
+        return this.array.map((val) => val.toString()).join('');
     }
 }

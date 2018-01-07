@@ -10,7 +10,7 @@ import {HTMLTags} from '../../src/ts/settings/HTMLTags';
 import {ITag} from '../../src/ts/model/interfaces/ITag';
 import {ICreateNode} from '../../src/ts/model/interfaces/ICreateNode';
 
-describe('Parser tests', () => {
+xdescribe('Parser tests', () => {
     it('should work as expected', () => {
         const parser: Parser = new Parser(ParserRules.rules, TagsArray.tags, new NodeFactory());
 
@@ -60,7 +60,7 @@ inny tekst
     });
 });
 
-describe('Parser tests when something goes wrong', () => {
+xdescribe('Parser tests when something goes wrong', () => {
     it('should work, even when tags array is incomplete', () => {
         const parserRules: IParserRule[] = [
             {

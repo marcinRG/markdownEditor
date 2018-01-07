@@ -1,0 +1,21 @@
+- po co bluebird skoro jest natywny Promise? Żeby było jasne: Często też korzystam z bluebirda, ale wtedy gdy tego potrzebuję (tzn. przykładowo zależy mi na map/reduce/mapSeries i opcji concurrency) — wtedy to ma sens :) Jednak na front-endzie każdy KB się liczy
+
+-cały konstruktor App można usunąć i od razu do własności klasy przypisać wartości w liniach 10-15
+
+- w HTMLTags.ts wszystkie typy są zbędne, a poza tym czy to nie powinien być string enum?
+
+- implementacja NodeFactory jest skomplikowana i nieczytelna — każda kolejna funkcja sprawdza jeden warunek, a jeśli nie jest spełniony to wywołuje kolejną funkcję? Nie widzę w tym sensu; łatwo też o pomyłkę, a dodanie nowego tagu wymaga modyfikacji przynajmniej dwóch miejsc… czy nie lepiej byłoby zrobić jeden switch(matchResult.tag), który wywoływałby odpowiednią funkcję?
+
+
+- dlaczego funkcja createTextNode przyjmuje aż dwa stringi, czemu parentNode nie ma typu i czemu w ogóle ta funkcja nie tylko tworzy text node, ale też dodaje go do rodzica?
+
+
+Zrobione:
+- w klasie Collection toString można łatwiej zaimplementować jako map + join  - poprawione na sugerowane przez ciebie rozwiązanie.
+
+- funkcje takie jak setEnabled i setValue wywaliłbym do osobnego pliku, wtedy można to też ładnie zaimportować np. jako import * as elementUtils from …
+- szkoda, że w tych funkcjach elem jest `any` - Poprawione.
+
+- funkcję findInArray można łatwo zastąpić natywną funkcją findIndex – Poprawione.
+
+- czemu funkcja getText zwraca null gdy results = 0 ? – Poprawione. To rzeczywiście nie było potrzebne, usunąłem linijkę gdy funkcja zwraca null.
