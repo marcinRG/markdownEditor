@@ -9,7 +9,7 @@ import {Property} from '../../src/ts/model/Property';
 import {NodeFactory} from '../../src/ts/utils/NodeFactory';
 import {NodeFactoryCoR} from '../../src/ts/utils/NodeFactoryCoR';
 
-xdescribe('Parser tests', () => {
+describe('Parser tests', () => {
 
     const parserRules: IParserRule[] = [
         {
@@ -274,7 +274,7 @@ xdescribe('Parser tests', () => {
             htmlTag: HTMLTags.del
         }
     ];
-    const tagsFactory = new NodeFactoryCoR();
+    const tagsFactory = new NodeFactory();
     const parser = new Parser(parserRules, tags, tagsFactory);
 
     it('should exist and have certain properties', () => {

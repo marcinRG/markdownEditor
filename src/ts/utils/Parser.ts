@@ -47,11 +47,11 @@ export class Parser {
     }
 
     public getParserRuleByHTMLTag(htmlTag: string): IParserRule {
-        return getParserRuleByHTML(htmlTag, this.tags, this.rules);
+        return findParserRuleWithHTMLTag(htmlTag, this.tags, this.rules);
     }
 }
 
-const getParserRuleByHTML = (htmlTag: string, tags, rules): IParserRule => {
+const findParserRuleWithHTMLTag = (htmlTag: string, tags, rules): IParserRule => {
     const pos = findInArrays(htmlTag, 'htmlTag', 'tag', tags, 'name', rules);
     if (pos >= 0) {
         return rules[pos];
@@ -59,7 +59,7 @@ const getParserRuleByHTML = (htmlTag: string, tags, rules): IParserRule => {
     return null;
 };
 
-const getRegexStr = (tag: string, rules: IParserRule[]): string => {
+const findRegexStrWithTag = (tag: string, rules: IParserRule[]): string => {
     const pos = findInArray(tag, 'name', rules);
     if (pos >= 0) {
         const rule = rules[pos];
@@ -77,7 +77,7 @@ const getMatchGroups = (tag: string, rules: IParserRule[]): number => {
 
 const parseText = (text: string, parentNode: INode, rules: IParserRule[], tags: ITag[], tagsFactory: ICreateNode) => {
     if (text && text.length) {
-        const rule = getParserRuleByHTML(parentNode.getNodeName(), tags, rules);
+        const rule = findParserRuleWithHTMLTag(parentNode.getNodeName(), tags, rules);
         if (rule) {
             const regExp = new RegExp(getChildrenRegexStr(rule.name, 'name', rules), 'i');
             text = findAndAddTextNode(text, regExp, parentNode);
@@ -116,7 +116,7 @@ const getChildrenRegexStr = (tagName: string, propertyName: string, array: IPars
         const childrenRules = getExistingChildrenNodes(pos, array);
         if (childrenRules && childrenRules.length > 0) {
             for (const elem of childrenRules) {
-                tab.push(getRegexStr(elem, array));
+                tab.push(findRegexStrWithTag(elem, array));
             }
         }
     }
@@ -208,7 +208,7 @@ const getExistingChildrenNodes = (position: number, rules: IParserRule[]) => {
         const tab = [];
         const childrenRules = rules[position].allowedChildrenNodes;
         for (const elem of childrenRules) {
-            const regexStr = getRegexStr(elem, rules);
+            const regexStr = findRegexStrWithTag(elem, rules);
             if (regexStr) {
                 tab.push(elem);
             }

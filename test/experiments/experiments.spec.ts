@@ -54,7 +54,11 @@ describe('experiments', () => {
             link: 'www.onet.pl',
         };
 
-        nodeFactory.createNode(mr);
+        const x = nodeFactory.createNode(mr);
+        if (x) {
+            console.log('exist');
+            console.log(x.toString());
+        }
         //strongCr.next = preCr;
         //strongCr.createNode(mr);
 
@@ -64,6 +68,14 @@ describe('experiments', () => {
         // z(mr);
 
 
+    });
+});
 
+describe('tests for', ()=>{
+    it('should work conunting match groups',()=>{
+        const str: string = '(__(.*)__)';
+        const countReqExpMatchGroups = (reqexpStr: string) => {
+            const parentheses = '';
+        }
     });
 });

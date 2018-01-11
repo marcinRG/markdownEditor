@@ -9,8 +9,9 @@ import {IParserRule} from '../../src/ts/model/interfaces/IParserRule';
 import {HTMLTags} from '../../src/ts/settings/HTMLTags';
 import {ITag} from '../../src/ts/model/interfaces/ITag';
 import {ICreateNode} from '../../src/ts/model/interfaces/ICreateNode';
+import {NodeFactoryCoR} from '../../src/ts/utils/NodeFactoryCoR';
 
-xdescribe('Parser tests', () => {
+describe('Parser tests', () => {
     it('should work as expected', () => {
         const parser: Parser = new Parser(ParserRules.rules, TagsArray.tags, new NodeFactory());
 
@@ -60,7 +61,7 @@ inny tekst
     });
 });
 
-xdescribe('Parser tests when something goes wrong', () => {
+describe('Parser tests when something goes wrong', () => {
     it('should work, even when tags array is incomplete', () => {
         const parserRules: IParserRule[] = [
             {
@@ -151,6 +152,7 @@ xdescribe('Parser tests when something goes wrong', () => {
 
         const parser: Parser = new Parser(parserRules, tags, tagsFactory);
         expect(parser.getParserRuleByTag(Tags.pre)).toBeNull();
+        console.log(parser.getParserRuleByHTMLTag(HTMLTags.del));
         expect(parser.getParserRuleByHTMLTag(HTMLTags.del)).toBeNull();
         const textToParse = `begin --**something**-- end`;
         const expectedResult = `<${HTMLTags.div}>begin <${HTMLTags.del}>**something**</${HTMLTags.del}> end</${HTMLTags.div}>`;
