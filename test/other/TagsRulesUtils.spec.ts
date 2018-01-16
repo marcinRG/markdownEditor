@@ -1,9 +1,83 @@
-import {IParserRule} from '../model/interfaces/IParserRule';
-import {IMatchResult} from '../model/interfaces/IMatchResult';
-import {Tags} from './Tags';
+import {HTMLTags} from '../../src/ts/settings/HTMLTags';
+import {ITag} from '../../src/ts/model/interfaces/ITag';
+import {Tags} from '../../src/ts/settings/Tags';
+import {IMatchResult} from '../../src/ts/model/interfaces/IMatchResult';
+import {IParserRule} from '../../src/ts/model/interfaces/IParserRule';
+import {findInArray, findParserRuleWithHTMLTag} from '../../src/ts/utils/TagsRulesUtils';
 
-export class ParserRules {
-    public static rules: IParserRule[] = [
+describe('TagRulesUtils tests', () => {
+    const tags: ITag[] = [
+        {
+            tag: Tags.all,
+            htmlTag: HTMLTags.div,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h1,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h2,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h3,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h4,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h5,
+        },
+        {
+            tag: Tags.header,
+            htmlTag: HTMLTags.h6,
+        },
+        {
+            tag: Tags.list,
+            htmlTag: HTMLTags.ul,
+        },
+        {
+            tag: Tags.listElement,
+            htmlTag: HTMLTags.li,
+        },
+        {
+            tag: Tags.underline,
+            htmlTag: HTMLTags.underline,
+        },
+        {
+            tag: Tags.strong,
+            htmlTag: HTMLTags.strong,
+        },
+        {
+            tag: Tags.link,
+            htmlTag: HTMLTags.a,
+        },
+        {
+            tag: Tags.pre,
+            htmlTag: HTMLTags.pre,
+        },
+        {
+            tag: Tags.blockQuote,
+            htmlTag: HTMLTags.blockquote,
+        },
+        {
+            tag: Tags.quote,
+            htmlTag: HTMLTags.quote,
+        },
+        {
+            tag: Tags.em,
+            htmlTag: HTMLTags.em,
+        },
+        {
+            tag: Tags.deleted,
+            htmlTag: HTMLTags.del,
+        },
+    ];
+
+    const rules: IParserRule[] = [
         {
             name: Tags.all,
             allowedChildrenNodes: [Tags.header, Tags.underline, Tags.strong, Tags.deleted, Tags.link,
@@ -191,4 +265,27 @@ export class ParserRules {
             },
         },
     ];
-}
+
+    it('should find proper index', () => {
+
+        const index = findInArray(Tags.strong, 'name', rules);
+        expect(index).toBe(2);
+        const indexFalse = findInArray('input', 'name', rules);
+        expect(indexFalse).toBe(-1);
+
+        const indexTag = findInArray(HTMLTags.h1, 'htmlTag', tags);
+        expect(indexTag).toBe(1);
+    });
+
+    it('should find parser rule in ParserRules table with htmlTag ', () => {
+        const htmlTag = HTMLTags.del;
+        const rule = findParserRuleWithHTMLTag(htmlTag, tags, rules);
+        expect(rule.name).toBe(Tags.deleted);
+        expect(rule.regExpStr).toBe('(--(.*)--)');
+
+        const htmlTagFalse = 'input';
+        const ruleFalse = findParserRuleWithHTMLTag(htmlTagFalse, tags, rules);
+        expect(ruleFalse).toBeNull();
+    });
+
+});

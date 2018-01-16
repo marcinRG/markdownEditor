@@ -22,7 +22,6 @@ export class NodeFactoryCoR implements ICreateNode {
         htmlTag: HTMLTags.a,
         next: null,
         createNode: (matchResult: IMatchResult) => {
-            console.log('inside');
             if (matchResult && (matchResult.tag === this.linkCreator.tag)) {
                 const node = new TagNode(this.linkCreator.htmlTag);
                 node.addProperty(new Property('href', matchResult.link));

@@ -6,7 +6,10 @@ import {TextNode} from '../model/TextNode';
 import {IMatchResult} from '../model/interfaces/IMatchResult';
 import {ITag} from '../model/interfaces/ITag';
 import {ICreateNode} from '../model/interfaces/ICreateNode';
-import has = Reflect.has;
+import {
+    findInArray, findParserRuleWithHTMLTag, findParserRuleWithTag, findRegexStrWithTag,
+    getAllAllowedChildrenRegexStr
+} from './TagsRulesUtils';
 
 export class Parser {
 
@@ -35,15 +38,12 @@ export class Parser {
     }
 
     public getAllowedChildrenRegexStr(tag: string): string {
-        return getChildrenRegexStr(tag, 'name', this.rules);
+        return getAllAllowedChildrenRegexStr(tag, this.rules);
     }
 
     public getParserRuleByTag(tag: string): IParserRule {
-        const pos = findInArray(tag, 'name', this.rules);
-        if (pos >= 0) {
-            return this.rules[pos];
-        }
-        return null;
+        const rule = findParserRuleWithTag(tag, this.rules);
+        return rule ? rule : null;
     }
 
     public getParserRuleByHTMLTag(htmlTag: string): IParserRule {
@@ -51,35 +51,11 @@ export class Parser {
     }
 }
 
-const findParserRuleWithHTMLTag = (htmlTag: string, tags, rules): IParserRule => {
-    const pos = findInArrays(htmlTag, 'htmlTag', 'tag', tags, 'name', rules);
-    if (pos >= 0) {
-        return rules[pos];
-    }
-    return null;
-};
-
-const findRegexStrWithTag = (tag: string, rules: IParserRule[]): string => {
-    const pos = findInArray(tag, 'name', rules);
-    if (pos >= 0) {
-        const rule = rules[pos];
-        return rule.regExpStr;
-    }
-    return null;
-};
-
-const getMatchGroups = (tag: string, rules: IParserRule[]): number => {
-    const pos = findInArray(tag, 'name', rules);
-    if (pos >= 0) {
-        return rules[pos].matchGroups;
-    }
-};
-
 const parseText = (text: string, parentNode: INode, rules: IParserRule[], tags: ITag[], tagsFactory: ICreateNode) => {
     if (text && text.length) {
         const rule = findParserRuleWithHTMLTag(parentNode.getNodeName(), tags, rules);
         if (rule) {
-            const regExp = new RegExp(getChildrenRegexStr(rule.name, 'name', rules), 'i');
+            const regExp = new RegExp(getAllAllowedChildrenRegexStr(rule.name, rules), 'i');
             text = findAndAddTextNode(text, regExp, parentNode);
             text = findAndAddTagNode(text, regExp, rule.name, parentNode, rules, tags, tagsFactory);
         } else {
@@ -87,43 +63,6 @@ const parseText = (text: string, parentNode: INode, rules: IParserRule[], tags: 
         }
         parseText(text, parentNode, rules, tags, tagsFactory);
     }
-};
-
-const findInArray = (value: string, propertyName: string, array: any[]): number => {
-    return array.findIndex((elem: any) => {
-        if (elem.hasOwnProperty(propertyName)) {
-            return elem[propertyName] === value;
-        }
-    });
-};
-
-const findInArrays = (val1: string, property11: string, property12: string,
-                      array1: any[], property2: string, array2: any[]) => {
-    const pos1 = findInArray(val1, property11, array1);
-    if (pos1 >= 0) {
-        const pos2 = findInArray(array1[pos1][property12], property2, array2);
-        if (pos2 >= 0) {
-            return pos2;
-        }
-    }
-    return -1;
-};
-
-const getChildrenRegexStr = (tagName: string, propertyName: string, array: IParserRule[]): string => {
-    const tab = [];
-    const pos = findInArray(tagName, propertyName, array);
-    if (pos >= 0) {
-        const childrenRules = getExistingChildrenNodes(pos, array);
-        if (childrenRules && childrenRules.length > 0) {
-            for (const elem of childrenRules) {
-                tab.push(findRegexStrWithTag(elem, array));
-            }
-        }
-    }
-    if (tab.length === 0) {
-        tab.push('($)');
-    }
-    return tab.join('|');
 };
 
 const getText = (text: string, regExp: RegExp): string => {
@@ -163,7 +102,7 @@ const findAndAddTagNode = (text: string, regexp: RegExp, tagName: string, parent
     return text;
 };
 
-const createTextNode = (text: string, textToAdd: string, parentNode:INode): string => {
+const createTextNode = (text: string, textToAdd: string, parentNode: INode): string => {
     if (textToAdd) {
         const len = (textToAdd && textToAdd.length) ? textToAdd.length : text.length;
         parentNode.addNode(new TextNode(textToAdd));
@@ -234,4 +173,11 @@ const findChildTagRule = (index: number, tag: string, rules: IParserRule[]): IPa
         }
     }
     return null;
+};
+
+const getMatchGroups = (tag: string, rules: IParserRule[]): number => {
+    const pos = findInArray(tag, 'name', rules);
+    if (pos >= 0) {
+        return rules[pos].matchGroups;
+    }
 };
