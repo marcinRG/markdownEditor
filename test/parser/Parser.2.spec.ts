@@ -9,6 +9,7 @@ import {IParserRule} from '../../src/ts/model/interfaces/IParserRule';
 import {HTMLTags} from '../../src/ts/settings/HTMLTags';
 import {ITag} from '../../src/ts/model/interfaces/ITag';
 import {ICreateNode} from '../../src/ts/model/interfaces/ICreateNode';
+import {NodeFactoryCoR} from '../../src/ts/utils/NodeFactoryCoR';
 
 describe('Parser tests', () => {
     it('should work as expected', () => {
@@ -151,6 +152,7 @@ describe('Parser tests when something goes wrong', () => {
 
         const parser: Parser = new Parser(parserRules, tags, tagsFactory);
         expect(parser.getParserRuleByTag(Tags.pre)).toBeNull();
+        console.log(parser.getParserRuleByHTMLTag(HTMLTags.del));
         expect(parser.getParserRuleByHTMLTag(HTMLTags.del)).toBeNull();
         const textToParse = `begin --**something**-- end`;
         const expectedResult = `<${HTMLTags.div}>begin <${HTMLTags.del}>**something**</${HTMLTags.del}> end</${HTMLTags.div}>`;

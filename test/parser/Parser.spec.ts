@@ -7,6 +7,7 @@ import {INode} from '../../src/ts/model/interfaces/INode';
 import {ITag} from '../../src/ts/model/interfaces/ITag';
 import {Property} from '../../src/ts/model/Property';
 import {NodeFactory} from '../../src/ts/utils/NodeFactory';
+import {NodeFactoryCoR} from '../../src/ts/utils/NodeFactoryCoR';
 
 describe('Parser tests', () => {
 
@@ -280,6 +281,7 @@ describe('Parser tests', () => {
         expect(parser).toBeDefined();
         expect((parser.getRules().length > 0)).toBeTruthy();
         const rule: IParserRule = parser.getParserRuleByTag(Tags.header);
+        console.log(rule);
         expect(rule).toBeDefined();
         expect(rule.regExpStr).toBe('((#{1,6})\\s(.*)(?:\\n|$))');
         expect(rule.allowedChildrenNodes.length).toBe(3);

@@ -1,0 +1,25 @@
+pozostałe funkcje w tym pliku też nie wiem do końca co robią
+
+-cały konstruktor App można usunąć i od razu do własności klasy przypisać wartości w liniach 10-15
+- dlaczego funkcja createTextNode przyjmuje aż dwa stringi, czemu parentNode nie ma typu i czemu w ogóle ta funkcja nie tylko tworzy text node, ale też dodaje go do rodzica?
+
+Zrobione+kilka odpowiedzi:
+
+- po co bluebird skoro jest natywny Promise? Szczerze, to po żeby w ogóle z niego skorzystać, zobaczyć do niego dokuemntację itp.
+
+- w HTMLTags.ts wszystkie typy są zbędne, a poza tym czy to nie powinien być string enum? - To prawda, zrobiłem tę klasę tylko po to żeby ustrzec się literówek
+podczas pisania.
+
+- w klasie Collection toString można łatwiej zaimplementować jako map + join  - poprawione na sugerowane przez ciebie rozwiązanie.
+
+- funkcje takie jak setEnabled i setValue wywaliłbym do osobnego pliku, wtedy można to też ładnie zaimportować np. jako import * as elementUtils from …
+- szkoda, że w tych funkcjach elem jest `any` - Poprawione.
+
+- funkcję findInArray można łatwo zastąpić natywną funkcją findIndex – Poprawione.
+
+- czemu funkcja getText zwraca null gdy results = 0 ? – Poprawione. To rzeczywiście nie było potrzebne, usunąłem linijkę gdy funkcja zwraca null.
+
+- implementacja NodeFactory jest skomplikowana i nieczytelna — Poprawiłem na sugerowane przez ciebie rozwiązanie. Oryginalnie planowałem tutaj rozwiąznie oparte o
+wzorzec Chain of Responsibilty. Zamieszczona clasa to miał być placeholder, do momentu implementacji.
+
+

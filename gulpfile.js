@@ -87,12 +87,6 @@ gulp.task('copyToBuild-fonts', function () {
         .pipe(gulp.dest(settings.build.fontsPath));
 });
 
-gulp.task('copyToBuild-fonts', function () {
-    msg('Kopiowanie fontów');
-    return gulp.src(settings.app.fontsSrc)
-        .pipe(gulp.dest(settings.build.fontsPath));
-});
-
 gulp.task('run-dist', ['dist-optimize'], function () {
     serve(false);
 });
