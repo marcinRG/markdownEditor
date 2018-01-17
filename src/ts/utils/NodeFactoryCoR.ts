@@ -6,6 +6,7 @@ import {ICreateNode} from '../model/interfaces/ICreateNode';
 import {HTMLTags} from '../settings/HTMLTags';
 import {Property} from '../model/Property';
 import {INodeCreator} from '../model/interfaces/INodeCreator';
+import {NodeCreator} from './NodeCreator';
 
 export class NodeFactoryCoR implements ICreateNode {
 
@@ -31,7 +32,7 @@ export class NodeFactoryCoR implements ICreateNode {
                     return this.linkCreator.next.createNode(matchResult);
                 }
             }
-        }
+        },
     };
     private underlineCreator: INodeCreator = {
         tag: Tags.underline,
@@ -47,7 +48,7 @@ export class NodeFactoryCoR implements ICreateNode {
                     return this.underlineCreator.next.createNode(matchResult);
                 }
             }
-        }
+        },
     };
     private headerCreator: INodeCreator = {
         tag: 'header',
@@ -62,7 +63,7 @@ export class NodeFactoryCoR implements ICreateNode {
                     return this.headerCreator.next.createNode(matchResult);
                 }
             }
-        }
+        },
     };
 
     constructor() {
@@ -80,21 +81,5 @@ export class NodeFactoryCoR implements ICreateNode {
 
     public createNode(matchResults: IMatchResult): INode {
         return this.strongCreator.createNode(matchResults);
-    }
-}
-
-export class NodeCreator implements INodeCreator {
-
-    constructor(public tag: string, public htmlTag: string, public next: INodeCreator = null) {
-    }
-
-    public createNode(matchResult: IMatchResult) {
-        if (matchResult && (matchResult.tag === this.tag)) {
-            return new TagNode(this.htmlTag);
-        } else {
-            if (this.next) {
-                return this.next.createNode(matchResult);
-            }
-        }
     }
 }

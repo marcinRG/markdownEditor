@@ -8,7 +8,7 @@ import {ITag} from '../model/interfaces/ITag';
 import {ICreateNode} from '../model/interfaces/ICreateNode';
 import {
     findParserRuleWithHTMLTag, findParserRuleWithTag,
-    getAllAllowedChildrenRegexStr
+    getAllAllowedChildrenRegexStr,
 } from './TagsRulesUtils';
 import {getMatchResults} from './MatchResultsUtils';
 

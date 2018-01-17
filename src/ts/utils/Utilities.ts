@@ -10,6 +10,11 @@ export function setValue(val: string, elem: HTMLInputElement | HTMLTextAreaEleme
     }
 }
 
+export function HTMLElementExists(elem: HTMLElement | HTMLTextAreaElement) {
+    return (elem &&
+        (elem instanceof HTMLTextAreaElement || elem instanceof HTMLElement));
+}
+
 export function debounce<A>(f: (a: A) => void, delay: number) {
     let timer: number = null;
     return (a: A) => {

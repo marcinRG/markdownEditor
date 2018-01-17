@@ -1,6 +1,6 @@
 import {StorageUtils} from '../../src/ts/utils/StorageUtils';
 
-xdescribe('Storage tests', () => {
+describe('Storage tests', () => {
 
     const key1 = 'key1';
     const key2 = 'key2';

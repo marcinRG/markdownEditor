@@ -1,7 +1,7 @@
 import { TextNode } from '../../src/ts/model/TextNode';
 import {HTMLTags} from '../../src/ts/settings/HTMLTags';
 
-xdescribe('TextNode tests', () => {
+describe('TextNode tests', () => {
     it('should exist & method toString should return value', () => {
         console.log('should exist & method toString should return value');
         const text = 'some value';

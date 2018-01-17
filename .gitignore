@@ -2,8 +2,7 @@
 .vscode
 bower_components
 _resources
-bundle.js
-**/*.js
+
 
 ### Node template
 # Logs
