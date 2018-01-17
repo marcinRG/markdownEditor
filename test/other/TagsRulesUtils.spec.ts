@@ -3,7 +3,10 @@ import {ITag} from '../../src/ts/model/interfaces/ITag';
 import {Tags} from '../../src/ts/settings/Tags';
 import {IMatchResult} from '../../src/ts/model/interfaces/IMatchResult';
 import {IParserRule} from '../../src/ts/model/interfaces/IParserRule';
-import {findInArray, findParserRuleWithHTMLTag} from '../../src/ts/utils/TagsRulesUtils';
+import {
+    findInArray, findParserRuleWithHTMLTag, findParserRuleWithTag,
+    findRegexStrWithTag, getAllAllowedChildrenRegexStr
+} from '../../src/ts/utils/TagsRulesUtils';
 
 describe('TagRulesUtils tests', () => {
     const tags: ITag[] = [
@@ -288,4 +291,71 @@ describe('TagRulesUtils tests', () => {
         expect(ruleFalse).toBeNull();
     });
 
+    it('should find parser rule with tag', () => {
+        const tag = Tags.quote;
+        const rule = findParserRuleWithTag(tag, rules);
+        expect(rule.name).toBe(tag);
+        expect(rule.regExpStr).toBe('(>(.*?)(?:\\n|$))');
+
+        const ruleFalse = findParserRuleWithTag('something', rules);
+        expect(ruleFalse).toBeNull();
+    });
+
+    it('should return RegEx string for specified Tag ', () => {
+        const tag = Tags.quote;
+        const str = findRegexStrWithTag(tag, rules);
+        expect(str).toBe('(>(.*?)(?:\\n|$))');
+        const tagFalse = 'input';
+        const strFalse = findRegexStrWithTag(tagFalse, rules);
+        expect(strFalse).toBeNull();
+    });
+
+    it('should return regExpStr of all elements in allowedChildrenNodes table for ' +
+        'specified Tag and join them into one string', () => {
+        const tag = Tags.quote;
+        const regexStrResult = getAllAllowedChildrenRegexStr(tag, rules);
+        //allowedChildrenNodes [Tags.strong, Tags.deleted, Tags.underline, Tags.em, Tags.link]
+        const expectedResult = findRegexStrWithTag(Tags.strong, rules) + '|' +
+            findRegexStrWithTag(Tags.deleted, rules) + '|' +
+            findRegexStrWithTag(Tags.underline, rules) + '|' +
+            findRegexStrWithTag(Tags.em, rules) + '|' +
+            findRegexStrWithTag(Tags.link, rules);
+        expect(regexStrResult).toBe(expectedResult);
+    });
+
+    it('should return value when there is a tag in allowedChildrenNodes,' +
+        ' for witch, there is no entry in rules table', () => {
+
+        const addtionalTag = 'additional';
+        const tagWithoutRule = ' tag not defined';
+        const additionalRule = {
+            name: addtionalTag,
+            allowedChildrenNodes: [Tags.strong, Tags.deleted, Tags.underline, tagWithoutRule, Tags.em, Tags.link],
+            regExpStr: '((?:\\s?\\*\\s.*?(?:\\n|$))+)',
+            isMultiLine: true,
+            matchGroups: 1,
+            values: (matchResult: RegExpMatchArray, index: number): IMatchResult => {
+                if (matchResult[index]) {
+                    return {
+                        tag: Tags.list,
+                        matchedText: matchResult[index],
+                        innerText: matchResult[index],
+                    };
+                }
+            },
+        };
+        rules.push(additionalRule);
+        const ruleFalse1 = findParserRuleWithTag(tagWithoutRule, rules);
+        expect(ruleFalse1).toBeNull();
+        const regexStrResult = getAllAllowedChildrenRegexStr(addtionalTag, rules);
+        const expectedResult = findRegexStrWithTag(Tags.strong, rules) + '|' +
+            findRegexStrWithTag(Tags.deleted, rules) + '|' +
+            findRegexStrWithTag(Tags.underline, rules) + '|' +
+            findRegexStrWithTag(Tags.em, rules) + '|' +
+            findRegexStrWithTag(Tags.link, rules);
+        expect(regexStrResult).toBe(expectedResult);
+        rules.pop();
+        const ruleFalse = findParserRuleWithTag(addtionalTag, rules);
+        expect(ruleFalse).toBeNull();
+    });
 });

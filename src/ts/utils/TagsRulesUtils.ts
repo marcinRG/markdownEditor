@@ -29,7 +29,7 @@ export function getAllAllowedChildrenRegexStr(tag: string, rules: IParserRule[])
     if (rule) {
         tab = rule.allowedChildrenNodes.map((allowedChild) => {
             return findRegexStrWithTag(allowedChild, rules);
-        }).filter(value => value);
+        }).filter((value) => value);
     }
     if (tab.length === 0) {
         tab.push('($)');
