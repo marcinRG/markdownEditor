@@ -9,6 +9,7 @@ var sassLint = require('gulp-sass-lint');
 var tsify = require('tsify');
 var del = require('del');
 var settings = require('./gulp.settings/settings');
+var sassImportOnce = require('gulp-sass-import-once');
 
 gulp.task('clean-styles', function (done) {
     var files = settings.app.cssStyles + '*.css';
@@ -41,6 +42,7 @@ gulp.task('test-run', function (done) {
 gulp.task('sass-compile', ['lint-sass'], function () {
     msg('Kompilacja plików scss -> css');
     return gulp.src(settings.app.scssFile)
+        .pipe(sassImportOnce())
         .pipe($.sass().on('error', $.sass.logError))
         .pipe(gulp.dest(settings.app.cssStyles));
 });
