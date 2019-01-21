@@ -45,4 +45,12 @@ Tekst niesformatowany
         defaultRoute: 'newEntry',
         errorRoute: 'error',
     };
+    public static fireBaseConfig = {
+        apiKey: 'AIzaSyCFm1pmx-GKhniZlCt_vfg7NCm_49z4a4k',
+        authDomain: 'markdown-editor-db.firebaseapp.com',
+        databaseURL: 'https://markdown-editor-db.firebaseio.com',
+        projectId: 'markdown-editor-db',
+        storageBucket: 'markdown-editor-db.appspot.com',
+        messagingSenderId: '1070468096359',
+    };
 }

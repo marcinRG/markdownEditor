@@ -88,25 +88,58 @@ app.run();*/
 
 import {routerService} from './services/router.service';
 import {AppSettings} from './settings/AppSettings';
+import {fireBaseService} from './services/firebase.service';
 
-function xxx(params) {
-    console.log('xxx');
-    console.log(params);
-}
+console.log('App start');
+const entry = {
+    text: `to jest tekst do dodania`,
+};
 
-function yyy(params) {
-    console.log('yyy');
-    console.log(params);
-}
-
-function error(params) {
+// fireBaseService.addEntry(entry).then((val) => {
+//     console.log('sukces');
+//     console.log(val);
+// }).catch((err) => {
+//     console.log('ERROR');
+//     console.log(err);
+// });
+// const entry2 = {
+//     text: `updated text`,
+//     val: 345,
+// };
+const id = '-LWmGGw3QauNMN65c67I';
+fireBaseService.getEntry(id).then((val) => {
+    console.log('sukces');
+    console.log(val);
+}).catch((err) => {
     console.log('error');
-    console.log(params);
-}
+    console.log(err);
+});
+// fireBaseService.updateEntry(id, entry2).then((val) => {
+//     console.log('sukces');
+//     console.log(val);
+// }).catch((err) => {
+//     console.log('ERROR');
+//     console.log(err);
+// });
 
-routerService.defaultRoute = AppSettings.routeSettings.defaultRoute;
-routerService.errorRoute = AppSettings.routeSettings.errorRoute;
-routerService.addRouteHandler(AppSettings.routeSettings.routes[0], xxx);
-routerService.addRouteHandler(AppSettings.routeSettings.routes[1], yyy);
-routerService.addRouteHandler(AppSettings.routeSettings.errorRoute, error);
-routerService.run();
+// function xxx(params) {
+//     console.log('xxx');
+//     console.log(params);
+// }
+//
+// function yyy(params) {
+//     console.log('yyy');
+//     console.log(params);
+// }
+//
+// function error(params) {
+//     console.log('error');
+//     console.log(params);
+// }
+//
+// routerService.defaultRoute = AppSettings.routeSettings.defaultRoute;
+// routerService.errorRoute = AppSettings.routeSettings.errorRoute;
+// routerService.addRouteHandler(AppSettings.routeSettings.routes[0], xxx);
+// routerService.addRouteHandler(AppSettings.routeSettings.routes[1], yyy);
+// routerService.addRouteHandler(AppSettings.routeSettings.errorRoute, error);
+// routerService.run();
