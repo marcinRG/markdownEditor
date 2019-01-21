@@ -9,6 +9,7 @@
     "ordered-imports": false,
     "no-shadowed-variable": false,
     "no-angle-bracket-type-assertion": false,
+    "object-literal-sort-keys": false,
     "quotemark": [
       true,
       "single"

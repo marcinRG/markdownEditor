@@ -37,4 +37,12 @@ Tekst niesformatowany
     public static textInputQuerySelector: string = '#text2Parse';
     public static textOutputQuerySelector: string = '#output';
     public static appKey: string = '_valxy_666999_ParserApp';
+    public static routeSettings = {
+        routes: [
+            'newEntry',
+            'showEntry',
+        ],
+        defaultRoute: 'newEntry',
+        errorRoute: 'error',
+    };
 }

@@ -1,4 +1,4 @@
-import * as Promise from 'bluebird';
+/*import * as Promise from 'bluebird';
 import {AppSettings} from './settings/AppSettings';
 import {IParse} from './model/interfaces/IParse';
 import {IStorage} from './model/interfaces/IStorage';
@@ -84,4 +84,29 @@ const createErrorMsg = (txt: string): string => {
 const app = new App();
 app.setParser(parseService);
 app.setStorage(storageService);
-app.run();
+app.run();*/
+
+import {routerService} from './services/router.service';
+import {AppSettings} from './settings/AppSettings';
+
+function xxx(params) {
+    console.log('xxx');
+    console.log(params);
+}
+
+function yyy(params) {
+    console.log('yyy');
+    console.log(params);
+}
+
+function error(params) {
+    console.log('error');
+    console.log(params);
+}
+
+routerService.defaultRoute = AppSettings.routeSettings.defaultRoute;
+routerService.errorRoute = AppSettings.routeSettings.errorRoute;
+routerService.addRouteHandler(AppSettings.routeSettings.routes[0], xxx);
+routerService.addRouteHandler(AppSettings.routeSettings.routes[1], yyy);
+routerService.addRouteHandler(AppSettings.routeSettings.errorRoute, error);
+routerService.run();
