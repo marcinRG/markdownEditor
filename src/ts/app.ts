@@ -86,14 +86,14 @@ app.setParser(parseService);
 app.setStorage(storageService);
 app.run();*/
 
-import {routerService} from './services/router.service';
-import {AppSettings} from './settings/AppSettings';
-import {fireBaseService} from './services/firebase.service';
-
-console.log('App start');
-const entry = {
-    text: `to jest tekst do dodania`,
-};
+// import {routerService} from './services/router.service';
+// import {AppSettings} from './settings/AppSettings';
+// import {fireBaseService} from './services/firebase.service';
+//
+// console.log('App start');
+// const entry = {
+//     text: `to jest tekst do dodania`,
+// };
 
 // fireBaseService.addEntry(entry).then((val) => {
 //     console.log('sukces');
@@ -106,14 +106,14 @@ const entry = {
 //     text: `updated text`,
 //     val: 345,
 // };
-const id = '-LWmGGw3QauNMN65c67I';
-fireBaseService.getEntry(id).then((val) => {
-    console.log('sukces');
-    console.log(val);
-}).catch((err) => {
-    console.log('error');
-    console.log(err);
-});
+// const id = '-LWmGGw3QauNMN65c67I';
+// fireBaseService.getEntry(id).then((val) => {
+//     console.log('sukces');
+//     console.log(val);
+// }).catch((err) => {
+//     console.log('error');
+//     console.log(err);
+// });
 // fireBaseService.updateEntry(id, entry2).then((val) => {
 //     console.log('sukces');
 //     console.log(val);
