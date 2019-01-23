@@ -1,41 +1,41 @@
 export class AppSettings {
     public static debounceTime: number = 2500;
-    public static templateText: string = `# Weekly JavaScript Challenge #9
-## Stwórz prosty edytor markdown
+    public static templateText: string = `# Prosty edytor markdown
+## edytor markdown z możliwością zapisu do onlineowej bazy danych
 
-Wymagania:
+Możliwości:
 * edycja tekstu w polu powoduje automatyczne renderowanie obok
 * obsługa **przynajmniej** podstawowych elementów języka markdown
 * tekst powinien się automatycznie zapisywać w przeglądarce
 * edytor powinien być funkcjonalny również na urządzeniach mobilnych
 
-Technologia:
-* dowolna ze wskazaniem na czysty JS
-* dodatkowe utrudnienie: Spróbować zaimplementować obsługę Markdowna samemu bez gotowych bibliotek (nieobowiązkowo)
-
 Zaimplementowano:
 * **pogrubienie**
 * //kursywa//
-* (odnośnik)[http://typeofweb.com/]
+* (odnośnik)[http://typeofweb.com]
+* __podkreślenie__
 * --przekreślenie--
-* __podkreslenie__
 * listy
 
 Dodatkowo:
 
-> Cytaty
-> cytat cd.
-> cytat cd 2.
-> cytat cd 3;
+>cytaty
+>cytat linijka 1
+>cytat linijka 2
+>cytat linijka 3
 
 '''
-Tekst niesformatowany
-## Nagłówek
-* --przekreślenie--
-* __podkreslenie__
+Dowolny nie interpretowany tekst
 '''`;
     public static textInputQuerySelector: string = '#text2Parse';
     public static textOutputQuerySelector: string = '#output';
+    public static saveButtonSelector: string = '#save';
+    public static uploadButtonSelector: string = '#upload';
+    public static tabLoadingSelector: string = '.page.load-page';
+    public static tabErrorSelector: string = '.page.error-page';
+    public static tabAppSelector: string = '.page.app-page';
+    public static adressInputSelector: string = '#adress-text';
+    public static tabsClassName: string = 'show';
     public static appKey: string = '_valxy_666999_ParserApp';
     public static routeSettings = {
         routes: [

@@ -14,7 +14,7 @@ class FirebaseService {
         this.entriesRef = this.db.ref().child(this.entriesName);
     }
 
-    public getEntry(id: string) {
+    public getEntry(id: string): Promise<any> {
         return this.getElem(id, this.entriesRef);
     }
 
@@ -24,6 +24,14 @@ class FirebaseService {
 
     public addEntry(entry: { text: string }): Promise<any> {
         return this.addElem(entry, this.entriesRef);
+    }
+
+    public encodeKey(key: string): string {
+        return encodeURIComponent(key);
+    }
+
+    public decodeKey(encodedKey: string): string {
+        return decodeURIComponent(encodedKey);
     }
 
     private getElem(id: string, ref: database.Reference): Promise<any> {

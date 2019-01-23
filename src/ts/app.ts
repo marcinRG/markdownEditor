@@ -1,4 +1,4 @@
-/*import * as Promise from 'bluebird';
+import * as Promise from 'bluebird';
 import {AppSettings} from './settings/AppSettings';
 import {IParse} from './model/interfaces/IParse';
 import {IStorage} from './model/interfaces/IStorage';
@@ -6,35 +6,63 @@ import {parseService} from './services/parse.service';
 import {storageService} from './services/storage.service';
 import * as utils from './utils/Utilities';
 import {HTMLElementExists} from './utils/Utilities';
+import {TabSwitcher} from './ui/tabSwitcher';
+import {routerService} from './services/router.service';
+import {IDataBase} from './model/interfaces/IDataBase';
+import {fireBaseService} from './services/firebase.service';
 
 class App {
 
-    private input: HTMLTextAreaElement;
-    private output: HTMLElement;
     private parser: IParse;
     private storage: IStorage;
+    private remoteDatabase: IDataBase;
+    private input: HTMLTextAreaElement;
+    private output: HTMLElement;
+    private tabSwitcher: TabSwitcher;
+    private saveButton: HTMLInputElement;
+    private uploadButton: HTMLInputElement;
+    private addressInput: HTMLInputElement;
     private delay: number;
     private debouncedParseAndAddToOutput: any;
+    private key: string = null;
 
     constructor() {
-        const input = <HTMLTextAreaElement> document.querySelector(AppSettings.textInputQuerySelector);
-        const output = <HTMLElement> document.querySelector(AppSettings.textOutputQuerySelector);
-        if (HTMLElementExists(input)) {
-            this.input = input;
-        }
-        if (HTMLElementExists(output)) {
-            this.output = output;
-        }
+
+        this.setHTMLElements();
+        this.setAndInitializeTabSwitcher();
         this.delay = AppSettings.debounceTime;
         this.debouncedParseAndAddToOutput = utils.debounce<string>((value) => {
             this.parseAndAddToOutput(value);
         }, this.delay);
     }
 
-    public setParser(parser: IParse) {
-        if (parser) {
-            this.parser = parser;
+    public handleNewEntry(params: any) {
+        utils.setEnabled(false, this.input);
+        if (this.storage) {
+            this.storage.read().then((val) => {
+                utils.setValue(val, this.input);
+                utils.setEnabled(true, this.input);
+                return val;
+            }).then((val) => {
+                this.parser.parse(val).then((val) => {
+                    this.output.innerHTML = (val).toString();
+                });
+                this.tabSwitcher.show(1);
+            });
         }
+    }
+
+    public handleError(params: any) {
+        console.log('error');
+    }
+
+    public handleShowEntry(params: any) {
+        console.log('show entry');
+    }
+
+    public run() {
+        this.addListenerToInputTextArea();
+        this.addListenerToSaveButton();
     }
 
     public setStorage(storage: IStorage) {
@@ -43,18 +71,73 @@ class App {
         }
     }
 
-    public run() {
-        this.addListenerToInputTextArea();
-        utils.setEnabled(false, this.input);
-        this.storage.read().then((val) => {
-            utils.setValue(val, this.input);
-            utils.setEnabled(true, this.input);
-            return val;
-        }).then((val) => {
-            this.parser.parse(val).then((val) => {
-                this.output.innerHTML = (val).toString();
+    public setParser(parser: IParse) {
+        if (parser) {
+            this.parser = parser;
+        }
+    }
+
+    public setRemoteDatabase(dataBase: IDataBase) {
+        if (dataBase) {
+            this.remoteDatabase = dataBase;
+        }
+    }
+
+    private addListenerToSaveButton() {
+        if (this.saveButton && this.saveButton instanceof HTMLInputElement) {
+            this.saveButton.addEventListener('click', () => {
+                console.log('button clicked');
+                if (this.key) {
+                    this.remoteDatabase.updateEntry(this.key, {text: this.input.value}).then(() => {
+                        console.log('value updated');
+                    });
+                } else {
+                    this.remoteDatabase.addEntry({
+                        text: this.input.value,
+                    }).then((key) => {
+                        this.key = key;
+                        const urlstr = this.remoteDatabase.encodeKey(key);
+                        window.history.replaceState('', '',
+                            `#/${AppSettings.routeSettings.routes[1]}/id/${urlstr}`);
+                        this.addressInput.value = urlstr;
+                    });
+                }
             });
-        });
+        }
+    }
+
+    private setAndInitializeTabSwitcher() {
+        this.tabSwitcher = new TabSwitcher([
+            <HTMLElement> document.querySelector(AppSettings.tabLoadingSelector),
+            <HTMLElement> document.querySelector(AppSettings.tabAppSelector),
+            <HTMLElement> document.querySelector(AppSettings.tabErrorSelector)], AppSettings.tabsClassName);
+        this.tabSwitcher.show(0);
+    }
+
+    private setHTMLElements() {
+        const input = <HTMLTextAreaElement> document.querySelector(AppSettings.textInputQuerySelector);
+        const output = <HTMLElement> document.querySelector(AppSettings.textOutputQuerySelector);
+        const saveBtn = <HTMLInputElement> document.querySelector(AppSettings.saveButtonSelector);
+        const uploadBtn = <HTMLInputElement> document.querySelector(AppSettings.uploadButtonSelector);
+        const addressInput = <HTMLInputElement> document.querySelector(AppSettings.adressInputSelector);
+
+        if (HTMLElementExists(input)) {
+            this.input = input;
+        }
+
+        if (HTMLElementExists(output)) {
+            this.output = output;
+        }
+
+        if (HTMLElementExists(saveBtn)) {
+            this.saveButton = saveBtn;
+        }
+        if (HTMLElementExists(uploadBtn)) {
+            this.uploadButton = uploadBtn;
+        }
+        if (HTMLElementExists(addressInput)) {
+            this.addressInput = addressInput;
+        }
     }
 
     private addListenerToInputTextArea() {
@@ -84,62 +167,18 @@ const createErrorMsg = (txt: string): string => {
 const app = new App();
 app.setParser(parseService);
 app.setStorage(storageService);
-app.run();*/
+app.setRemoteDatabase(fireBaseService);
+app.run();
 
-// import {routerService} from './services/router.service';
-// import {AppSettings} from './settings/AppSettings';
-// import {fireBaseService} from './services/firebase.service';
-//
-// console.log('App start');
-// const entry = {
-//     text: `to jest tekst do dodania`,
-// };
-
-// fireBaseService.addEntry(entry).then((val) => {
-//     console.log('sukces');
-//     console.log(val);
-// }).catch((err) => {
-//     console.log('ERROR');
-//     console.log(err);
-// });
-// const entry2 = {
-//     text: `updated text`,
-//     val: 345,
-// };
-// const id = '-LWmGGw3QauNMN65c67I';
-// fireBaseService.getEntry(id).then((val) => {
-//     console.log('sukces');
-//     console.log(val);
-// }).catch((err) => {
-//     console.log('error');
-//     console.log(err);
-// });
-// fireBaseService.updateEntry(id, entry2).then((val) => {
-//     console.log('sukces');
-//     console.log(val);
-// }).catch((err) => {
-//     console.log('ERROR');
-//     console.log(err);
-// });
-
-// function xxx(params) {
-//     console.log('xxx');
-//     console.log(params);
-// }
-//
-// function yyy(params) {
-//     console.log('yyy');
-//     console.log(params);
-// }
-//
-// function error(params) {
-//     console.log('error');
-//     console.log(params);
-// }
-//
-// routerService.defaultRoute = AppSettings.routeSettings.defaultRoute;
-// routerService.errorRoute = AppSettings.routeSettings.errorRoute;
-// routerService.addRouteHandler(AppSettings.routeSettings.routes[0], xxx);
-// routerService.addRouteHandler(AppSettings.routeSettings.routes[1], yyy);
-// routerService.addRouteHandler(AppSettings.routeSettings.errorRoute, error);
-// routerService.run();
+routerService.defaultRoute = AppSettings.routeSettings.defaultRoute;
+routerService.errorRoute = AppSettings.routeSettings.errorRoute;
+routerService.addRouteHandler(AppSettings.routeSettings.routes[0], (params) => {
+    app.handleNewEntry(params);
+});
+routerService.addRouteHandler(AppSettings.routeSettings.routes[1], (params) => {
+    app.handleShowEntry(params);
+});
+routerService.addRouteHandler(AppSettings.routeSettings.errorRoute, (params) => {
+    app.handleError(params);
+});
+routerService.run();

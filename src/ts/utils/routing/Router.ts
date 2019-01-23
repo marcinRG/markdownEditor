@@ -16,7 +16,7 @@ export class Router {
         });
     }
 
-    public addRouteHandler(route: string, handler: (args: any) => void) {
+    public addRouteHandler(route: string, handler: any) {
         this.routeAndParams.push({
             route,
             handler,
