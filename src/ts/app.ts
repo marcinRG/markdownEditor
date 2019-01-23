@@ -38,6 +38,7 @@ class App {
 
     public handleNewEntry(params: any) {
         utils.setEnabled(false, this.input);
+        this.key = null;
         if (this.storage) {
             this.storage.read().then((val) => {
                 utils.setValue(val, this.input);
@@ -53,11 +54,48 @@ class App {
     }
 
     public handleError(params: any) {
-        console.log('error');
+        this.tabSwitcher.show(2);
+        if (params && params.error) {
+            console.log(params.error.title);
+            console.log(params.error.description);
+        }
+
     }
 
     public handleShowEntry(params: any) {
-        console.log('show entry');
+        this.tabSwitcher.show(0);
+        if (params && params.id) {
+            const key = this.remoteDatabase.decodeKey(params.id);
+            this.remoteDatabase.getEntry(params.id).then((value) => {
+                if (value && value.text) {
+                    this.input.value = value.text;
+                    this.parseAndAddToOutput(this.input.value);
+                    this.tabSwitcher.show(1);
+                } else {
+                    this.handleError({
+                        error: {
+                            title: 'Nie znaleziono takiego wpisu',
+                            description: `podany id: ${key} nie istnieje w bazie danych`,
+                        },
+                    });
+                }
+            }).catch((error) => {
+                console.log(error);
+                this.handleError({
+                    error: {
+                        title: 'Nie znaleziono takiego wpisu',
+                        description: `podany id: ${key} nie istnieje w bazie danych`,
+                    },
+                });
+            });
+        } else {
+            this.handleError({
+                error: {
+                    title: 'Zly link',
+                    description: 'Podany link jest niedobry',
+                },
+            });
+        }
     }
 
     public run() {
@@ -89,7 +127,7 @@ class App {
                 console.log('button clicked');
                 if (this.key) {
                     this.remoteDatabase.updateEntry(this.key, {text: this.input.value}).then(() => {
-                        console.log('value updated');
+                        this.addressInput.value = 'value updated';
                     });
                 } else {
                     this.remoteDatabase.addEntry({
@@ -99,7 +137,7 @@ class App {
                         const urlstr = this.remoteDatabase.encodeKey(key);
                         window.history.replaceState('', '',
                             `#/${AppSettings.routeSettings.routes[1]}/id/${urlstr}`);
-                        this.addressInput.value = urlstr;
+                        this.addressInput.value = window.location.href;
                     });
                 }
             });
