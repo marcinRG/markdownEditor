@@ -49,6 +49,7 @@ class App {
                     this.output.innerHTML = (val).toString();
                 });
                 this.tabSwitcher.show(1);
+                window.history.replaceState('', '', `#/${AppSettings.routeSettings.defaultRoute}`);
             });
         }
     }
@@ -59,7 +60,6 @@ class App {
             console.log(params.error.title);
             console.log(params.error.description);
         }
-
     }
 
     public handleShowEntry(params: any) {
@@ -83,16 +83,16 @@ class App {
                 console.log(error);
                 this.handleError({
                     error: {
-                        title: 'Nie znaleziono takiego wpisu',
-                        description: `podany id: ${key} nie istnieje w bazie danych`,
+                        title: 'Błąd podczas odczytu',
+                        description: `Błąd odczytu z sieciowej bazy danych`,
                     },
                 });
             });
         } else {
             this.handleError({
                 error: {
-                    title: 'Zly link',
-                    description: 'Podany link jest niedobry',
+                    title: 'Złe parametry',
+                    description: 'Prametry żądania są nieprawidłowe',
                 },
             });
         }
@@ -124,10 +124,9 @@ class App {
     private addListenerToSaveButton() {
         if (this.saveButton && this.saveButton instanceof HTMLInputElement) {
             this.saveButton.addEventListener('click', () => {
-                console.log('button clicked');
                 if (this.key) {
                     this.remoteDatabase.updateEntry(this.key, {text: this.input.value}).then(() => {
-                        this.addressInput.value = 'value updated';
+                        this.addressInput.value = 'zaktualizowano wpis w sieciowej bazie danych';
                     });
                 } else {
                     this.remoteDatabase.addEntry({

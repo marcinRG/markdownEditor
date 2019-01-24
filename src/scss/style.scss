@@ -20,9 +20,10 @@
   background-color: $color-900;
 
   h1 {
+    padding :  0.15em;
     padding: 3vh 0 1vh .5em;
     color: $color-100;
-    font-size: 6vh;
+    font-size: 2em;
   }
 }
 
@@ -293,6 +294,18 @@
     font-size: .75em;
     outline: 0;
   }
+
+  .text-adress {
+    display: block;
+    whidth: 100%;
+    padding: .7em 2em;
+    font-size: .75em;
+    outline: 0;
+    border-radius: 5px;
+    border-color: $color-900;
+    background-color: $color-200;
+  }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////

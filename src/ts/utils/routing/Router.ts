@@ -31,7 +31,6 @@ export class Router {
     private setFirstRunParams() {
         const reqParams = this.getReqParams();
         if (reqParams.route === this.errorRoute) {
-            window.history.replaceState('', '', `#/${this.defaultRoute}`);
             reqParams.route = this.defaultRoute;
             reqParams.parameters = {
                 msg: 'init',
