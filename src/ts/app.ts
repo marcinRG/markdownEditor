@@ -5,11 +5,13 @@ import {IStorage} from './model/interfaces/IStorage';
 import {parseService} from './services/parse.service';
 import {storageService} from './services/storage.service';
 import * as utils from './utils/Utilities';
-import {HTMLElementExists} from './utils/Utilities';
 import {TabSwitcher} from './ui/tabSwitcher';
 import {routerService} from './services/router.service';
 import {IDataBase} from './model/interfaces/IDataBase';
 import {fireBaseService} from './services/firebase.service';
+import {ErrorDisplay} from './ui/errorDisplay';
+import {LinkInfoDisplay} from './ui/linkInfoDisplay';
+import {FileUploader} from './ui/fileUploader';
 
 class App {
 
@@ -18,18 +20,16 @@ class App {
     private remoteDatabase: IDataBase;
     private input: HTMLTextAreaElement;
     private output: HTMLElement;
-    private tabSwitcher: TabSwitcher;
     private saveButton: HTMLInputElement;
-    private uploadButton: HTMLInputElement;
-    private addressInput: HTMLInputElement;
-    private errorTitle: HTMLElement;
-    private errorDescrition: HTMLElement;
+    private tabSwitcher: TabSwitcher;
+    private errorDisplay: ErrorDisplay;
+    private linkInfoDisplay: LinkInfoDisplay;
+    private fileUploader: FileUploader;
     private delay: number;
     private debouncedParseAndAddToOutput: any;
     private key: string = null;
 
     constructor() {
-
         this.setHTMLElements();
         this.setAndInitializeTabSwitcher();
         this.delay = AppSettings.debounceTime;
@@ -42,6 +42,7 @@ class App {
         console.log('new');
         console.log(params);
         utils.setEnabled(false, this.input);
+        this.linkInfoDisplay.hideInfo();
         this.key = null;
         if (this.storage) {
             this.storage.read().then((val) => {
@@ -52,7 +53,7 @@ class App {
                 this.parser.parse(val).then((val) => {
                     this.output.innerHTML = (val).toString();
                     this.tabSwitcher.show(1);
-                    window.history.replaceState('', '', `#/${AppSettings.routeSettings.defaultRoute}`);
+                    this.changeURLText(`#/${AppSettings.routeSettings.defaultRoute}`);
                 });
             });
         }
@@ -61,62 +62,37 @@ class App {
     public handleError(params: any) {
         console.log('error');
         console.log(params);
+        this.changeURLText(`#/${AppSettings.routeSettings.errorRoute}`);
         this.tabSwitcher.show(2);
-        if (params && params.error) {
-            if (params.error.title && params.error.title !== '') {
-                this.errorTitle.textContent = params.error.title;
-            } else {
-                this.errorTitle.textContent = 'Błąd!!!';
-            }
-            if (params.error.description && params.error.description !== '') {
-                this.errorDescrition.textContent = params.error.description;
-            } else {
-                this.errorDescrition.textContent = 'Wystąpił nieokreślony błąd.';
-            }
-        }
+        this.errorDisplay.displayError(params);
     }
 
     public handleShowEntry(params: any) {
         console.log('entry');
         console.log(params);
         this.tabSwitcher.show(0);
-        if (params && params.id) {
-            const key = this.remoteDatabase.decodeKey(params.id);
+        if (utils.requestParamsValid(params)) {
+            this.key = this.remoteDatabase.decodeKey(params.id);
             this.remoteDatabase.getEntry(params.id).then((value) => {
-                if (value && value.text) {
-                    this.input.value = value.text;
-                    this.parseAndAddToOutput(this.input.value);
-                    this.tabSwitcher.show(1);
+                if (utils.databaseQueryValid(value)) {
+                    this.showExistingEntry(value);
                 } else {
-                    this.handleError({
-                        error: {
-                            title: 'Nie znaleziono takiego wpisu',
-                            description: `podany id: ${key} nie istnieje w bazie danych`,
-                        },
-                    });
+                    this.handleError(AppSettings.errorValue);
                 }
-            }).catch((error) => {
-                console.log(error);
-                this.handleError({
-                    error: {
-                        title: 'Błąd podczas odczytu',
-                        description: `Błąd odczytu z sieciowej bazy danych`,
-                    },
-                });
+            }).catch(() => {
+                this.handleError(AppSettings.errorDatabase);
             });
         } else {
-            this.handleError({
-                error: {
-                    title: 'Złe parametry',
-                    description: 'Prametry żądania są nieprawidłowe',
-                },
-            });
+            this.handleError(AppSettings.errorParameters);
         }
     }
 
     public run() {
         this.addListenerToInputTextArea();
         this.addListenerToSaveButton();
+        this.errorDisplay = new ErrorDisplay();
+        this.linkInfoDisplay = new LinkInfoDisplay(AppSettings.showClassName);
+        this.fileUploader = new FileUploader();
     }
 
     public setStorage(storage: IStorage) {
@@ -137,68 +113,53 @@ class App {
         }
     }
 
+    private showExistingEntry(value: { text: string }) {
+        this.input.value = value.text;
+        this.parseAndAddToOutput(this.input.value);
+        this.tabSwitcher.show(1);
+    }
+
+    private changeURLText(url: string) {
+        window.history.replaceState('', '', url);
+    }
+
     private addListenerToSaveButton() {
         if (this.saveButton && this.saveButton instanceof HTMLInputElement) {
             this.saveButton.addEventListener('click', () => {
                 if (this.key) {
                     this.remoteDatabase.updateEntry(this.key, {text: this.input.value}).then(() => {
-                        this.addressInput.value = 'zaktualizowano wpis w sieciowej bazie danych';
+                        this.linkInfoDisplay.showInfo(AppSettings.databaseEntryUpdateInfo);
                     });
                 } else {
                     this.remoteDatabase.addEntry({
                         text: this.input.value,
                     }).then((key) => {
-                        this.key = key;
-                        const urlstr = this.remoteDatabase.encodeKey(key);
-                        window.history.replaceState('', '',
-                            `#/${AppSettings.routeSettings.routes[1]}/id/${urlstr}`);
-                        this.addressInput.value = window.location.href;
+                        this.onDataBaseEntrySave(key);
                     });
                 }
             });
         }
     }
 
+    private onDataBaseEntrySave(key: string) {
+        this.key = key;
+        const urlstr = this.remoteDatabase.encodeKey(key);
+        this.changeURLText(`#/${AppSettings.routeSettings.routes[1]}/id/${urlstr}`);
+        this.linkInfoDisplay.showInfo(window.location.href);
+    }
+
     private setAndInitializeTabSwitcher() {
         this.tabSwitcher = new TabSwitcher([
-            <HTMLElement> document.querySelector(AppSettings.tabLoadingSelector),
-            <HTMLElement> document.querySelector(AppSettings.tabAppSelector),
-            <HTMLElement> document.querySelector(AppSettings.tabErrorSelector)], AppSettings.tabsClassName);
-        this.tabSwitcher.show(0);
+            AppSettings.tabLoadingSelector,
+            AppSettings.tabAppSelector,
+            AppSettings.tabErrorSelector], AppSettings.showClassName);
     }
 
     private setHTMLElements() {
-        const input = <HTMLTextAreaElement> document.querySelector(AppSettings.textInputQuerySelector);
-        const output = <HTMLElement> document.querySelector(AppSettings.textOutputQuerySelector);
-        const saveBtn = <HTMLInputElement> document.querySelector(AppSettings.saveButtonSelector);
-        const uploadBtn = <HTMLInputElement> document.querySelector(AppSettings.uploadButtonSelector);
-        const addressInput = <HTMLInputElement> document.querySelector(AppSettings.adressInputSelector);
-        const errorTitle = <HTMLElement> document.querySelector(AppSettings.errorTitleSelector);
-        const errorDescription = <HTMLElement> document.querySelector(AppSettings.errorDescriptionSelector);
-
-        if (HTMLElementExists(input)) {
-            this.input = input;
-        }
-
-        if (HTMLElementExists(output)) {
-            this.output = output;
-        }
-
-        if (HTMLElementExists(saveBtn)) {
-            this.saveButton = saveBtn;
-        }
-        if (HTMLElementExists(uploadBtn)) {
-            this.uploadButton = uploadBtn;
-        }
-        if (HTMLElementExists(addressInput)) {
-            this.addressInput = addressInput;
-        }
-        if (HTMLElementExists(errorTitle)) {
-            this.errorTitle = errorTitle;
-        }
-        if (HTMLElementExists(errorDescription)) {
-            this.errorDescrition = errorDescription;
-        }
+        this.input = utils.getHTMLElement<HTMLTextAreaElement>(AppSettings.textInputQuerySelector);
+        this.output = utils.getHTMLElement<HTMLElement>(AppSettings.textOutputQuerySelector);
+        this.saveButton = utils.getHTMLElement<HTMLInputElement>(AppSettings.saveButtonSelector);
+        this.saveButton.value = AppSettings.saveButtonTxt;
     }
 
     private addListenerToInputTextArea() {
@@ -213,17 +174,10 @@ class App {
         Promise.all([this.storage.save(val), this.parser.parse(val)]).then((result) => {
             this.output.innerHTML = result[1].toString();
         }, (error) => {
-            this.output.innerHTML = createErrorMsg('Wystąpił błąd');
+            this.output.innerHTML = utils.createErrorMsg(AppSettings.errorMsg);
         });
     }
 }
-
-const createErrorMsg = (txt: string): string => {
-    const p = document.createElement('p');
-    p.classList.add('error-message');
-    p.textContent = txt;
-    return p.outerHTML;
-};
 
 const app = new App();
 app.setParser(parseService);

@@ -1,4 +1,5 @@
 import {IResolver} from '../../model/interfaces/IResolver';
+import {AppSettings} from '../../settings/AppSettings';
 
 export class Router {
     public routeAndParams = [];
@@ -32,15 +33,17 @@ export class Router {
         const reqParams = this.getReqParams();
         if (reqParams.route === this.errorRoute) {
             reqParams.route = this.defaultRoute;
-            reqParams.parameters = {
-                msg: 'init',
-            };
+            reqParams.parameters = {};
         }
         this.handleRequest(reqParams);
     }
 
-    private handleRequest(reqParams: { route: string, parameters: {} }) {
+    private handleRequest(reqParams: { route: string, parameters: any }) {
         const index = this.hasHandler(reqParams.route);
+        if (reqParams.route === AppSettings.routeSettings.errorRoute) {
+            reqParams.parameters.title = AppSettings.errorRoute.title;
+            reqParams.parameters.description = AppSettings.errorRoute.description;
+        }
         if (index >= 0) {
             this.routeAndParams[index].handler(reqParams.parameters);
         }

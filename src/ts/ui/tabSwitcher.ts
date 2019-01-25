@@ -1,5 +1,16 @@
+import {getHTMLElement} from '../utils/Utilities';
+
 export class TabSwitcher {
-    constructor(public elements: HTMLElement[], public className: string) {
+    private elements: HTMLElement[] = [];
+
+    constructor(public elementsSelectors: string[], public className: string, selected: number = 0) {
+        if (elementsSelectors && elementsSelectors.length) {
+            for (const elemSelector of elementsSelectors) {
+                const elem = getHTMLElement<HTMLElement>(elemSelector);
+                this.elements.push(elem);
+            }
+        }
+        this.show(selected);
     }
 
     public hideAll() {

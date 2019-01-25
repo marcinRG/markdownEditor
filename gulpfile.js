@@ -102,47 +102,6 @@ function runDev() {
     serve(true);
 }
 
-gulp.task('clean-styles', cleanStyles);
-gulp.task('code-check', codeCheck);
-gulp.task('lint-sass', lintSass);
-gulp.task('sass-compile', sassCompile);
-gulp.task('browserify-compile', browserifyCompile);
-gulp.task('inject-js', gulp.series(codeCheck, browserifyCompile, injectJSToHTML));
-gulp.task('inject-css', gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML));
-gulp.task('copyToBuild-fonts', copyFonts);
-gulp.task('copy-to-build-and-optimize', optimizeJsCssAndCopyToBuild);
-gulp.task('test', runTests);
-
-
-gulp.task('run-build', gulp.series(
-    gulp.parallel(
-        copyFonts,
-        gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML),
-        gulp.series(codeCheck, browserifyCompile, injectJSToHTML)
-    ), optimizeJsCssAndCopyToBuild, runBuild));
-
-gulp.task('run-dev', gulp.series(gulp.parallel(
-    gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML),
-    gulp.series(codeCheck, browserifyCompile, injectJSToHTML)),
-    runDev
-));
-
-gulp.task('help', help);
-
-gulp.task('default', help);
-
-gulp.task('sass-watcher', function () {
-    gulp.watch(settings.app.scssStyles, gulp.series('sass-compile', 'inject-css'));
-});
-
-gulp.task('ts-watcher', function () {
-    gulp.watch(settings.app.allTSs, 'inject-js');
-});
-
-gulp.task('ts-watcher-test', function () {
-    gulp.watch(settings.app.allTSandTest, 'test-run');
-});
-
 function serve(isDev) {
     var nodeOptions = {
         script: settings.server.serverApp,
@@ -178,3 +137,44 @@ function clean(path, done) {
 function msg(txt) {
     $.util.log($.util.colors.blue(txt));
 }
+
+gulp.task('clean-styles', cleanStyles);
+gulp.task('code-check', codeCheck);
+gulp.task('lint-sass', lintSass);
+gulp.task('sass-compile', sassCompile);
+gulp.task('browserify-compile', browserifyCompile);
+gulp.task('inject-js', gulp.series(codeCheck, browserifyCompile, injectJSToHTML));
+gulp.task('inject-css', gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML));
+gulp.task('copyToBuild-fonts', copyFonts);
+gulp.task('copy-to-build-and-optimize', optimizeJsCssAndCopyToBuild);
+gulp.task('test', runTests);
+
+
+gulp.task('run-build', gulp.series(
+    gulp.parallel(
+        copyFonts,
+        gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML),
+        gulp.series(codeCheck, browserifyCompile, injectJSToHTML)
+    ), optimizeJsCssAndCopyToBuild, runBuild));
+
+gulp.task('run-dev', gulp.series(gulp.parallel(
+    gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML),
+    gulp.series(codeCheck, browserifyCompile, injectJSToHTML)),
+    runDev
+));
+
+gulp.task('help', help);
+
+gulp.task('default', help);
+
+gulp.task('sass-watcher', function () {
+    gulp.watch(settings.app.scssStyles, 'inject-css');
+});
+
+gulp.task('ts-watcher', function () {
+    gulp.watch(settings.app.allTSs, 'inject-js');
+});
+
+gulp.task('ts-watcher-test', function () {
+    gulp.watch(settings.app.allTSandTest, 'test-run');
+});

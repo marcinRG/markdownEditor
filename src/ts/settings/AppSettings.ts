@@ -1,7 +1,9 @@
+import {IError} from '../model/interfaces/IError';
+
 export class AppSettings {
     public static debounceTime: number = 2500;
     public static templateText: string = `# Prosty edytor markdown
-## edytor markdown z możliwością zapisu do onlineowej bazy danych
+## edytor markdown z możliwością zapisu do zdalnej bazy danych
 
 Możliwości:
 * edycja tekstu w polu powoduje automatyczne renderowanie obok
@@ -27,17 +29,23 @@ Dodatkowo:
 '''
 Dowolny nie interpretowany tekst
 '''`;
+
     public static textInputQuerySelector: string = '#text2Parse';
     public static textOutputQuerySelector: string = '#output';
     public static saveButtonSelector: string = '#save';
+    public static saveButtonTxt: string = 'zapisz do zdalnej bazy danych';
     public static uploadButtonSelector: string = '#upload';
-    public static errorTitleSelector: string = '.error-description';
-    public static errorDescriptionSelector: string = '#upload';
+    public static uploadButtonTxt: string = 'wczytaj z pliku ...';
+    public static fileUploaderSelector: string = '#file-uploader';
+
+    public static errorTitleSelector: string = '.error-title';
+    public static errorDescriptionSelector: string = '.error-description';
+
     public static tabLoadingSelector: string = '.page.load-page';
     public static tabErrorSelector: string = '.page.error-page';
     public static tabAppSelector: string = '.page.app-page';
-    public static adressInputSelector: string = '#adress-text';
-    public static tabsClassName: string = 'show';
+    public static addressInputSelector: string = '#adress-text';
+    public static showClassName: string = 'show';
     public static appKey: string = '_valxy_666999_ParserApp';
     public static routeSettings = {
         routes: [
@@ -55,4 +63,25 @@ Dowolny nie interpretowany tekst
         storageBucket: 'markdown-editor-db.appspot.com',
         messagingSenderId: '1070468096359',
     };
+    public static errorValue: IError = {
+        title: 'Nieprawidłowy obiekt',
+        description: `Obiekt zwrócony przez bazę danych jest nieprawidłowy`,
+    };
+    public static errorDatabase: IError = {
+        title: 'Błąd bazy danych',
+        description: `Błąd podczas łączenia ze zdalną bazą danych`,
+    };
+
+    public static errorParameters: IError = {
+        title: 'Złe parametry',
+        description: 'Parametry zapytania są nieprawidłowe',
+    };
+
+    public static errorRoute: IError = {
+        title: 'Nieprawidłowa trasa',
+        description: 'Parametry zapytania są nieprawidłowe',
+    };
+
+    public static databaseEntryUpdateInfo = 'zaktualizowano wpis w sieciowej bazie danych';
+    public static errorMsg = 'Wystąpił błąd';
 }
