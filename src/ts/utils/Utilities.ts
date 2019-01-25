@@ -16,7 +16,7 @@ export function HTMLElementExists(elem: HTMLElement | HTMLTextAreaElement) {
 }
 
 export function debounce<A>(f: (a: A) => void, delay: number) {
-    let timer: number = null;
+    let timer: any = null;
     return (a: A) => {
         if (!timer) {
             timer = setTimeout(() => f(a), delay);

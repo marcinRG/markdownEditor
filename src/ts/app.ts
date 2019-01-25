@@ -22,6 +22,8 @@ class App {
     private saveButton: HTMLInputElement;
     private uploadButton: HTMLInputElement;
     private addressInput: HTMLInputElement;
+    private errorTitle: HTMLElement;
+    private errorDescrition: HTMLElement;
     private delay: number;
     private debouncedParseAndAddToOutput: any;
     private key: string = null;
@@ -37,6 +39,8 @@ class App {
     }
 
     public handleNewEntry(params: any) {
+        console.log('new');
+        console.log(params);
         utils.setEnabled(false, this.input);
         this.key = null;
         if (this.storage) {
@@ -47,22 +51,34 @@ class App {
             }).then((val) => {
                 this.parser.parse(val).then((val) => {
                     this.output.innerHTML = (val).toString();
+                    this.tabSwitcher.show(1);
+                    window.history.replaceState('', '', `#/${AppSettings.routeSettings.defaultRoute}`);
                 });
-                this.tabSwitcher.show(1);
-                window.history.replaceState('', '', `#/${AppSettings.routeSettings.defaultRoute}`);
             });
         }
     }
 
     public handleError(params: any) {
+        console.log('error');
+        console.log(params);
         this.tabSwitcher.show(2);
         if (params && params.error) {
-            console.log(params.error.title);
-            console.log(params.error.description);
+            if (params.error.title && params.error.title !== '') {
+                this.errorTitle.textContent = params.error.title;
+            } else {
+                this.errorTitle.textContent = 'Błąd!!!';
+            }
+            if (params.error.description && params.error.description !== '') {
+                this.errorDescrition.textContent = params.error.description;
+            } else {
+                this.errorDescrition.textContent = 'Wystąpił nieokreślony błąd.';
+            }
         }
     }
 
     public handleShowEntry(params: any) {
+        console.log('entry');
+        console.log(params);
         this.tabSwitcher.show(0);
         if (params && params.id) {
             const key = this.remoteDatabase.decodeKey(params.id);
@@ -157,6 +173,8 @@ class App {
         const saveBtn = <HTMLInputElement> document.querySelector(AppSettings.saveButtonSelector);
         const uploadBtn = <HTMLInputElement> document.querySelector(AppSettings.uploadButtonSelector);
         const addressInput = <HTMLInputElement> document.querySelector(AppSettings.adressInputSelector);
+        const errorTitle = <HTMLElement> document.querySelector(AppSettings.errorTitleSelector);
+        const errorDescription = <HTMLElement> document.querySelector(AppSettings.errorDescriptionSelector);
 
         if (HTMLElementExists(input)) {
             this.input = input;
@@ -174,6 +192,12 @@ class App {
         }
         if (HTMLElementExists(addressInput)) {
             this.addressInput = addressInput;
+        }
+        if (HTMLElementExists(errorTitle)) {
+            this.errorTitle = errorTitle;
+        }
+        if (HTMLElementExists(errorDescription)) {
+            this.errorDescrition = errorDescription;
         }
     }
 

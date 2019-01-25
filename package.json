@@ -17,7 +17,7 @@
     "url": "https://github.com/marcinRG/markdownEditor/issues"
   },
   "devDependencies": {
-    "@types/jasmine": "^2.6.2",
+    "@types/jasmine": "^3.3.7",
     "browserify": "^16.2.3",
     "del": "^3.0.0",
     "gulp": "^4.0.0",
@@ -30,7 +30,6 @@
     "gulp-nodemon": "^2.4.2",
     "gulp-open": "^3.0.1",
     "gulp-plumber": "^1.2.1",
-    "node-sass": "^4.11.0",
     "gulp-sass": "^4.0.2",
     "gulp-sass-import-once": "^2.0.2",
     "gulp-sass-lint": "^1.4.0",
@@ -46,9 +45,10 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^2.0.0",
     "karma-jasmine": "^2.0.1",
-    "karma-phantomjs-launcher": "^1.0.4",
     "karma-typescript": "^3.0.13",
+    "node-sass": "^4.11.0",
     "puppeteer": "^1.11.0",
+    "stylelint": "^9.10.1",
     "tsify": "^4.0.1",
     "tslint": "^5.12.1",
     "typescript": "^3.2.4",

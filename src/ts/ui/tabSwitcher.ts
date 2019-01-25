@@ -9,6 +9,7 @@ export class TabSwitcher {
     }
 
     public show(i) {
+        this.hideAll();
         if (i >= 0 && i < this.elements.length) {
             if (this.elements && this.elements[i]) {
                 this.elements[i].classList.add(this.className);

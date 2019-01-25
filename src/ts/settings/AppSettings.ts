@@ -31,6 +31,8 @@ Dowolny nie interpretowany tekst
     public static textOutputQuerySelector: string = '#output';
     public static saveButtonSelector: string = '#save';
     public static uploadButtonSelector: string = '#upload';
+    public static errorTitleSelector: string = '.error-description';
+    public static errorDescriptionSelector: string = '#upload';
     public static tabLoadingSelector: string = '.page.load-page';
     public static tabErrorSelector: string = '.page.error-page';
     public static tabAppSelector: string = '.page.app-page';
