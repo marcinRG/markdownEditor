@@ -1,5 +1,13 @@
 @import 'variables';
 
+@mixin roboto {
+  font-family: 'Roboto', sans-serif;
+}
+
+@mixin oxygen {
+  font-family: 'Oxygen Mono', monospace;
+}
+
 @mixin set-to-zero {
   border: 0;
   margin: 0;

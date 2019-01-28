@@ -93,6 +93,7 @@ class App {
         this.errorDisplay = new ErrorDisplay();
         this.linkInfoDisplay = new LinkInfoDisplay(AppSettings.showClassName);
         this.fileUploader = new FileUploader();
+        this.fileUploader.addCallback(this.fileReadHandler, this);
     }
 
     public setStorage(storage: IStorage) {
@@ -111,6 +112,11 @@ class App {
         if (dataBase) {
             this.remoteDatabase = dataBase;
         }
+    }
+
+    private fileReadHandler(txt: any) {
+        this.input.value = txt;
+        this.parseAndAddToOutput(this.input.value);
     }
 
     private showExistingEntry(value: { text: string }) {
@@ -179,7 +185,7 @@ class App {
     }
 }
 
-const app = new App();
+/*const app = new App();
 app.setParser(parseService);
 app.setStorage(storageService);
 app.setRemoteDatabase(fireBaseService);
@@ -196,4 +202,4 @@ routerService.addRouteHandler(AppSettings.routeSettings.routes[1], (params) => {
 routerService.addRouteHandler(AppSettings.routeSettings.errorRoute, (params) => {
     app.handleError(params);
 });
-routerService.run();
+routerService.run();*/

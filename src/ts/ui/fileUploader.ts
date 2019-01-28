@@ -12,11 +12,29 @@ export class FileUploader {
         this.uploadButton = getHTMLElement<HTMLInputElement>(AppSettings.uploadButtonSelector);
         this.uploadButton.value = AppSettings.uploadButtonTxt;
         this.addButtonHandler();
+        this.addFileUploadHandler();
     }
 
-    public addCallBack(callback: any, thisArg: any) {
+    public addCallback(callback: any, thisArg: any) {
         this.callback = callback;
         this.thisArg = thisArg;
+    }
+
+    private addFileUploadHandler() {
+        if (this.fileUploader) {
+            this.fileUploader.addEventListener('change', () => {
+                this.loadTextFile();
+            });
+        }
+    }
+
+    private loadTextFile() {
+        const file: File = this.fileUploader.files[0];
+        const fileReader: FileReader = new FileReader();
+        fileReader.addEventListener('load', () => {
+            this.callback.apply(this.thisArg, [fileReader.result]);
+        });
+        fileReader.readAsText(file);
     }
 
     private addButtonHandler() {

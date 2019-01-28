@@ -1,0 +1,19 @@
+@import '../variables';
+@import '../mixins';
+
+.app-header {
+  height: 4em;
+  background-color: $color-900;
+
+  h1 {
+    @include set-to-zero;
+    padding: .5em 0 .5em .5em;
+    color: $color-100;
+    font-size: 1.75em;
+  }
+}
+
+.app-section {
+  position: relative;
+}
+

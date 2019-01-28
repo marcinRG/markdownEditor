@@ -26,20 +26,29 @@
             </div>
         </div>
 
-        <div class="page app-page hidden">
-            <textarea class="input-elem" id="text2Parse"></textarea>
-            <div class="output-elem" id="output"></div>
+
+        <div class="page app-page">
+            <ul class="tab-ctrl">
+                <li class="li-elem">input</li>
+                <li class="li-elem">output</li>
+            </ul>
+            <div class="input-output">
+                <textarea class="input-elem" id="text2Parse"></textarea>
+                <div class="output-elem hide-input-output" id="output"></div>
+            </div>
             <div class="controls">
-                <input type="file" id="file-uploader" id="file-uploader" style="display: none">
+                <input type="file" id="file-uploader" id="file-uploader" accept="text/*, .txt"  style="display: none">
                 <input type="button" class="button upload-btn" id="upload" value="upload from file">
                 <input type="button" class="button save-btn" id="save" value="save">
-                <input type="text" class="text-adress hidden" id="adress-text">
+                <input type="text" class="text-adress " id="adress-text">
+                <!--<input type="text" class="text-adress hidden" id="adress-text">-->
+
             </div>
         </div>
 
-        <div class="page load-page hidden">
-            <img src="img/Spinner-1s-200px.svg" class="load-img" alt="loading...">
-        </div>
+        <!--<div class="page load-page hidden">-->
+            <!--<img src="img/Spinner-1s-200px.svg" class="load-img" alt="loading...">-->
+        <!--</div>-->
 
     </section>
 </main>
