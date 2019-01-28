@@ -33,10 +33,13 @@ Dowolny nie interpretowany tekst
     public static textInputQuerySelector: string = '#text2Parse';
     public static textOutputQuerySelector: string = '#output';
     public static saveButtonSelector: string = '#save';
-    public static saveButtonTxt: string = 'zapisz do zdalnej bazy danych';
+    public static saveButtonTxt: string = 'zapisz';
     public static uploadButtonSelector: string = '#upload';
-    public static uploadButtonTxt: string = 'wczytaj z pliku ...';
+    public static uploadButtonTxt: string = 'wczytaj z pliku';
     public static fileUploaderSelector: string = '#file-uploader';
+    public static inputTabButtonSelector: string = '#input-tab-btn';
+    public static outputTabButtonSelector: string = '#output-tab-btn';
+    public static inputOutputHideClassName: string = 'hide-input-output';
 
     public static errorTitleSelector: string = '.error-title';
     public static errorDescriptionSelector: string = '.error-description';
@@ -44,7 +47,7 @@ Dowolny nie interpretowany tekst
     public static tabLoadingSelector: string = '.page.load-page';
     public static tabErrorSelector: string = '.page.error-page';
     public static tabAppSelector: string = '.page.app-page';
-    public static addressInputSelector: string = '#adress-text';
+    public static addressInputSelector: string = '#address-text';
     public static showClassName: string = 'show';
     public static appKey: string = '_valxy_666999_ParserApp';
     public static routeSettings = {

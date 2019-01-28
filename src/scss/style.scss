@@ -4,17 +4,4 @@
 @import './pageElements/header';
 @import './pageElements/error';
 @import './pageElements/app';
-
-.load-page {
-
-  background-color: $color-200;
-  z-index: 5;
-
-  .load-img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-  }
-}
-
+@import './pageElements/loading';

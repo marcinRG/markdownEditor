@@ -71,6 +71,12 @@ function copyFonts() {
         .pipe(gulp.dest(settings.build.fontsPath));
 }
 
+function copyImages() {
+    msg('Kopiowanie obrazów');
+    return gulp.src(settings.app.imageSrc)
+        .pipe(gulp.dest(settings.build.imagesPath));
+}
+
 function help(done) {
     $.taskListing(done());
 }
@@ -145,14 +151,22 @@ gulp.task('sass-compile', sassCompile);
 gulp.task('browserify-compile', browserifyCompile);
 gulp.task('inject-js', gulp.series(codeCheck, browserifyCompile, injectJSToHTML));
 gulp.task('inject-css', gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML));
-gulp.task('copyToBuild-fonts', copyFonts);
+gulp.task('copyAssets', gulp.series(copyFonts, copyImages));
 gulp.task('copy-to-build-and-optimize', optimizeJsCssAndCopyToBuild);
 gulp.task('test', runTests);
 
+gulp.task('create-build', gulp.series(
+    gulp.parallel(
+        copyFonts,
+        copyImages,
+        gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML),
+        gulp.series(codeCheck, browserifyCompile, injectJSToHTML)
+    ), optimizeJsCssAndCopyToBuild));
 
 gulp.task('run-build', gulp.series(
     gulp.parallel(
         copyFonts,
+        copyImages,
         gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML),
         gulp.series(codeCheck, browserifyCompile, injectJSToHTML)
     ), optimizeJsCssAndCopyToBuild, runBuild));

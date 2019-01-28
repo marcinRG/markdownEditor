@@ -12,6 +12,7 @@ import {fireBaseService} from './services/firebase.service';
 import {ErrorDisplay} from './ui/errorDisplay';
 import {LinkInfoDisplay} from './ui/linkInfoDisplay';
 import {FileUploader} from './ui/fileUploader';
+import {InputOutputSwitch} from './ui/inputOutputSwitch';
 
 class App {
 
@@ -25,6 +26,7 @@ class App {
     private errorDisplay: ErrorDisplay;
     private linkInfoDisplay: LinkInfoDisplay;
     private fileUploader: FileUploader;
+    private inputOutputSwitch: InputOutputSwitch;
     private delay: number;
     private debouncedParseAndAddToOutput: any;
     private key: string = null;
@@ -39,8 +41,6 @@ class App {
     }
 
     public handleNewEntry(params: any) {
-        console.log('new');
-        console.log(params);
         utils.setEnabled(false, this.input);
         this.linkInfoDisplay.hideInfo();
         this.key = null;
@@ -60,16 +60,12 @@ class App {
     }
 
     public handleError(params: any) {
-        console.log('error');
-        console.log(params);
         this.changeURLText(`#/${AppSettings.routeSettings.errorRoute}`);
         this.tabSwitcher.show(2);
         this.errorDisplay.displayError(params);
     }
 
     public handleShowEntry(params: any) {
-        console.log('entry');
-        console.log(params);
         this.tabSwitcher.show(0);
         if (utils.requestParamsValid(params)) {
             this.key = this.remoteDatabase.decodeKey(params.id);
@@ -91,6 +87,7 @@ class App {
         this.addListenerToInputTextArea();
         this.addListenerToSaveButton();
         this.errorDisplay = new ErrorDisplay();
+        this.inputOutputSwitch = new InputOutputSwitch();
         this.linkInfoDisplay = new LinkInfoDisplay(AppSettings.showClassName);
         this.fileUploader = new FileUploader();
         this.fileUploader.addCallback(this.fileReadHandler, this);
@@ -185,7 +182,7 @@ class App {
     }
 }
 
-/*const app = new App();
+const app = new App();
 app.setParser(parseService);
 app.setStorage(storageService);
 app.setRemoteDatabase(fireBaseService);
@@ -202,4 +199,4 @@ routerService.addRouteHandler(AppSettings.routeSettings.routes[1], (params) => {
 routerService.addRouteHandler(AppSettings.routeSettings.errorRoute, (params) => {
     app.handleError(params);
 });
-routerService.run();*/
+routerService.run();
