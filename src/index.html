@@ -17,10 +17,38 @@
         <h1>Edytor markdown</h1>
     </section>
     <section class="app-section">
-        <textarea class="input-elem" id="text2Parse">
-        </textarea>
-        <div class="output-elem" id="output">
+
+        <div class="page error-page hidden">
+            <div class="error-msg">
+                <h2 class="error-title">Wystąpił błąd</h2>
+                <span class="error-description">opis błędu</span>
+                <a href="#/newEntry" class="error-link">wróć do strony głównej</a>
+            </div>
         </div>
+
+
+        <div class="page app-page hidden">
+            <ul class="tab-ctrl">
+                <li class="li-elem" id="input-tab-btn">input</li>
+                <li class="li-elem" id="output-tab-btn">output</li>
+            </ul>
+            <div class="input-output">
+                <textarea class="input-elem" id="text2Parse"></textarea>
+                <div class="output-elem hide-input-output" id="output"></div>
+            </div>
+            <div class="controls">
+                <input type="file" id="file-uploader" id="file-uploader" accept="text/*, .txt"  style="display: none">
+                <input type="button" class="button upload-btn" id="upload" value="upload from file">
+                <input type="button" class="button save-btn" id="save" value="save">
+                <input type="text" class="text-address hidden" id="address-text">
+
+            </div>
+        </div>
+
+        <div class="page load-page">
+            <img src="img/Spinner-1s-200px.svg" class="load-img" alt="loading...">
+        </div>
+
     </section>
 </main>
 

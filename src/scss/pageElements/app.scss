@@ -1,0 +1,302 @@
+@import '../variables';
+@import '../mixins';
+@import '../common';
+
+.app-page {
+  z-index: 10;
+  overflow: hidden;
+  background-color: $color-700;
+  overflow-y: auto;
+
+  &::after {
+    clear: both;
+  }
+
+  .tab-ctrl {
+    @include set-to-zero;
+    @include block-border-box;
+    list-style-type: none;
+
+    &::after {
+      clear: both;
+    }
+
+    .li-elem {
+      margin: .55em .1em 0;
+      padding: .45em .5em;
+      display: block;
+      float: left;
+      font-size: .85em;
+      background-color: $color-200;
+      color: $color-900;
+      cursor: pointer;
+
+      &:nth-of-type(2) {
+        background-color: $color-100;
+      }
+    }
+
+    @media screen {
+      @media (min-width: $media-br-2) {
+        display: none;
+      }
+    }
+
+  }
+
+  .hide-input-output {
+    visibility: hidden;
+  }
+
+  .input-output {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    height: $height-small;
+
+    &::after {
+      clear: both;
+    }
+
+    @media screen {
+      @media (min-width: $media-br-2) {
+        height: $height-big;
+      }
+    }
+
+  }
+
+  .input-elem {
+    @include set-to-zero;
+    @include block-border-box;
+    @include oxygen;
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    font-size: .75em;
+    width: 100%;
+    overflow: auto;
+    height: $height-small;
+    outline: none;
+    padding: .5em;
+    resize: none;
+    background-color: $color-200;
+
+    @media screen {
+      @media (min-width: $media-br-2) {
+        width: 40%;
+        float: left;
+        visibility: visible;
+        position: relative;
+        height: $height-big;
+      }
+    }
+  }
+
+  .output-elem {
+    @include set-to-zero;
+    @include block-border-box;
+    background-color: $color-100;
+    color: $color-900;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: .5em;
+    width: 100%;
+    overflow: auto;
+    height: $height-small;
+
+    @media screen {
+      @media (min-width: $media-br-2) {
+        position: relative;
+        width: 60%;
+        visibility: visible;
+        float: right;
+        height: $height-big;
+      }
+    }
+
+    h1 {
+      @include before-elem(1.5em);
+      font-size: 2.2em;
+    }
+
+    h2 {
+      @include before-elem(1.5em);
+      font-size: 1.9em;
+    }
+
+    h3 {
+      @include before-elem(1.4em);
+      font-size: 1.7em;
+    }
+
+    h4 {
+      @include before-elem(1.4em);
+      font-size: 1.5em;
+    }
+
+    h5 {
+      @include before-elem(1.4em);
+      font-size: 1.2em;
+    }
+
+    h6 {
+      @include before-elem(1.4em);
+      font-size: .95em;
+    }
+
+    ul {
+      display: block;
+      margin: 1em .5em 1em 0;
+      background-color: $color-300;
+
+      li {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: .6em 0 .6em 2em;
+        background-color: $color-300;
+        position: relative;
+        font-size: .95em;
+
+        &::before {
+          display: inline-block;
+          text-align: center;
+          top: 17.5%;
+          width: 2em;
+          content: '\2740';
+          color: $color-800;
+          position: absolute;
+          left: 0;
+        }
+      }
+    }
+
+    a {
+      background-color: $color-600;
+      font-weight: 300;
+      color: $color-50;
+      text-decoration: underline;
+      position: relative;
+      padding: .2em .2em .2em 25px;
+      display: inline-block;
+
+      &::before {
+        height: 100%;
+        display: inline-block;
+        position: absolute;
+        font-size: 15px;
+        width: 25px;
+        top: 2px;
+        left: 0;
+        text-align: center;
+        color: $color-800;
+        content: '\01f517';
+      }
+    }
+
+    .underline {
+      display: inline-block;
+      color: $color-900;
+      border-bottom: 2px $color-900 solid;
+    }
+
+    pre {
+      @include oxygen;
+      background-color: $color-300;
+      color: $color-900;
+      font-size: .85em;
+      text-align: left;
+      padding: 2.8em .3em .3em;
+      margin: .5em 0;
+      border-bottom: 5px $color-900 solid;
+      position: relative;
+
+      &::before {
+        @include block-border-box;
+        background-color: $color-900;
+        position: absolute;
+        padding: .5em 0 0 .3em;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2.5em;
+        content: '\25a7';
+        color: $color-50;
+      }
+    }
+
+    blockquote {
+      @include block-border-box;
+      text-align: center;
+      margin: .5em 0;
+      padding: .7em;
+      background-color: $color-900;
+      color: $color-50;
+      font-weight: 100;
+      font-style: italic;
+
+      &::before {
+        @include block-border-box;
+        text-align: left;
+        font-size: 2em;
+        content: '\201C';
+      }
+
+      &::after {
+        @include block-border-box;
+        text-align: right;
+        font-size: 2em;
+        content: '\201E';
+      }
+
+      q {
+        background-color: $color-900;
+        color: $color-50;
+
+        &::after,
+        &::before {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .controls {
+    @include set-to-zero;
+    @include block-border-box;
+    display: block;
+    width: 100%;
+    height: 15vh;
+    min-height: 6em;
+    float: left;
+    padding: 1em 1em 1em .5em;
+  }
+
+  .button {
+    border-radius: 5px;
+    border-color: $color-900;
+    background-color: $color-200;
+    cursor: pointer;
+    padding: .7em 2em;
+    font-size: .75em;
+    outline: 0;
+  }
+
+  .text-address {
+    @include set-to-zero;
+    @include block-border-box;
+    text-overflow: ellipsis;
+    width: 100%;
+    padding: .1em .25em;
+    font-size: 1.5em;
+    margin-top: .25em;
+    outline: 0;
+    border-radius: 5px;
+    border-color: $color-900;
+    background-color: $color-200;
+  }
+}

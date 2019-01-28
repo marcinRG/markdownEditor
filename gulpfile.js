@@ -11,20 +11,20 @@ var del = require('del');
 var settings = require('./gulp.settings/settings');
 var sassImportOnce = require('gulp-sass-import-once');
 
-gulp.task('clean-styles', function (done) {
+function cleanStyles(done) {
     var files = settings.app.cssStyles + '*.css';
     clean(files, done);
-});
+}
 
-gulp.task('code-check', function () {
+function codeCheck() {
     return gulp.src(settings.app.allTSs)
         .pipe($.tslint({
             formatter: "verbose"
         }))
         .pipe($.tslint.report());
-});
+}
 
-gulp.task('lint-sass', ['clean-styles'], function () {
+function lintSass() {
     return gulp.src(settings.app.scssStyles)
         .pipe(sassLint(
             {
@@ -33,27 +33,17 @@ gulp.task('lint-sass', ['clean-styles'], function () {
         ))
         .pipe(sassLint.format())
         .pipe(sassLint.failOnError())
-});
+}
 
-gulp.task('test-run', function (done) {
-    runTests(done);
-});
-
-gulp.task('sass-compile', ['lint-sass'], function () {
+function sassCompile() {
     msg('Kompilacja plików scss -> css');
     return gulp.src(settings.app.scssFile)
         .pipe(sassImportOnce())
         .pipe($.sass().on('error', $.sass.logError))
         .pipe(gulp.dest(settings.app.cssStyles));
-});
+}
 
-gulp.task("ts-compile", ['code-check'], function () {
-    return gulp.src(settings.app.allTSs)
-        .pipe(tsProject())
-        .pipe(gulp.dest(settings.app.jsAppFolder));
-});
-
-gulp.task('browserify-compil', ['code-check'], function () {
+function browserifyCompile() {
     return browserify({
         entries: [settings.app.tsFile],
         debug: true
@@ -61,18 +51,37 @@ gulp.task('browserify-compil', ['code-check'], function () {
         .bundle()
         .pipe(source(settings.app.compiledJS))
         .pipe(gulp.dest('./'));
-});
+}
 
-gulp.task('browserify-inject-js', ['browserify-compil'], function () {
+function injectJSToHTML() {
     return gulp.src(settings.app.index)
         .pipe($.inject(gulp.src(settings.app.compiledJS, {read: false}), {relative: true}))
         .pipe(gulp.dest(settings.app.client));
-});
+}
 
-gulp.task('build-prepare', ['browserify-inject-js', 'inject-css'], function () {
-});
+function injectCssToHTML() {
+    return gulp.src(settings.app.index)
+        .pipe($.inject(gulp.src(settings.app.cssFile, {read: false}), {relative: true}))
+        .pipe(gulp.dest(settings.app.client));
+}
 
-gulp.task('dist-optimize', ['build-prepare', 'copyToBuild-fonts', 'test-run'], function () {
+function copyFonts() {
+    msg('Kopiowanie fontów');
+    return gulp.src(settings.app.fontsSrc)
+        .pipe(gulp.dest(settings.build.fontsPath));
+}
+
+function copyImages() {
+    msg('Kopiowanie obrazów');
+    return gulp.src(settings.app.imageSrc)
+        .pipe(gulp.dest(settings.build.imagesPath));
+}
+
+function help(done) {
+    $.taskListing(done());
+}
+
+function optimizeJsCssAndCopyToBuild() {
     var cleanCss = require('gulp-clean-css');
     return gulp.src(settings.app.index)
         .pipe($.plumber())
@@ -80,44 +89,24 @@ gulp.task('dist-optimize', ['build-prepare', 'copyToBuild-fonts', 'test-run'], f
         .pipe($.if('*.js', $.uglify()))
         .pipe($.if('*.css', cleanCss()))
         .pipe(gulp.dest(settings.build.path));
-});
+}
 
+function runTests(done) {
+    var Server = require('karma').Server;
+    var karmaServer = new Server({
+        configFile: __dirname + '/karma.conf.js',
+    }, function (exitCode) {
+        done();
+    }).start();
+}
 
-gulp.task('copyToBuild-fonts', function () {
-    msg('Kopiowanie fontów');
-    return gulp.src(settings.app.fontsSrc)
-        .pipe(gulp.dest(settings.build.fontsPath));
-});
-
-gulp.task('run-dist', ['dist-optimize'], function () {
+function runBuild() {
     serve(false);
-});
+}
 
-gulp.task('run-dev', ['browserify-inject-js', 'inject-css', 'test-run'], function () {
+function runDev() {
     serve(true);
-});
-
-gulp.task('help', $.taskListing);
-
-gulp.task('default', ['help']);
-
-gulp.task('sass-watcher', function () {
-    gulp.watch(settings.app.scssStyles, ['sass-compile', 'inject-css']);
-});
-
-gulp.task('inject-css', ['sass-compile'], function () {
-    return gulp.src(settings.app.index)
-        .pipe($.inject(gulp.src(settings.app.cssFile, {read: false}), {relative: true}))
-        .pipe(gulp.dest(settings.app.client));
-});
-
-gulp.task('ts-watcher', function () {
-    gulp.watch(settings.app.allTSs, ['browserify-inject-js']);
-});
-
-gulp.task('ts-watcher-test', function () {
-    gulp.watch(settings.app.allTSandTest, ['test-run']);
-});
+}
 
 function serve(isDev) {
     var nodeOptions = {
@@ -144,8 +133,6 @@ function serve(isDev) {
         });
 }
 
-
-//--functions
 function clean(path, done) {
     $.util.log('Czyszczenie folderu:' + $.util.colors.blue(path));
     del(path).then(function () {
@@ -157,11 +144,51 @@ function msg(txt) {
     $.util.log($.util.colors.blue(txt));
 }
 
-function runTests(done) {
-    var Server = require('karma').Server;
-    var karmaServer = new Server({
-        configFile: __dirname + '/karma.conf.js',
-    }, function (exitCode) {
-        done();
-    }).start();
-}
+gulp.task('clean-styles', cleanStyles);
+gulp.task('code-check', codeCheck);
+gulp.task('lint-sass', lintSass);
+gulp.task('sass-compile', sassCompile);
+gulp.task('browserify-compile', browserifyCompile);
+gulp.task('inject-js', gulp.series(codeCheck, browserifyCompile, injectJSToHTML));
+gulp.task('inject-css', gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML));
+gulp.task('copyAssets', gulp.series(copyFonts, copyImages));
+gulp.task('copy-to-build-and-optimize', optimizeJsCssAndCopyToBuild);
+gulp.task('test', runTests);
+
+gulp.task('create-build', gulp.series(
+    gulp.parallel(
+        copyFonts,
+        copyImages,
+        gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML),
+        gulp.series(codeCheck, browserifyCompile, injectJSToHTML)
+    ), optimizeJsCssAndCopyToBuild));
+
+gulp.task('run-build', gulp.series(
+    gulp.parallel(
+        copyFonts,
+        copyImages,
+        gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML),
+        gulp.series(codeCheck, browserifyCompile, injectJSToHTML)
+    ), optimizeJsCssAndCopyToBuild, runBuild));
+
+gulp.task('run-dev', gulp.series(gulp.parallel(
+    gulp.series(cleanStyles, lintSass, sassCompile, injectCssToHTML),
+    gulp.series(codeCheck, browserifyCompile, injectJSToHTML)),
+    runDev
+));
+
+gulp.task('help', help);
+
+gulp.task('default', help);
+
+gulp.task('sass-watcher', function () {
+    gulp.watch(settings.app.scssStyles, 'inject-css');
+});
+
+gulp.task('ts-watcher', function () {
+    gulp.watch(settings.app.allTSs, 'inject-js');
+});
+
+gulp.task('ts-watcher-test', function () {
+    gulp.watch(settings.app.allTSandTest, 'test-run');
+});

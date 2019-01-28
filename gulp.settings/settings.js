@@ -20,7 +20,7 @@ var paths = {
     compiledJS: devFolder + 'bundle.js',
     compiledTS: devFolder + 'bundle.ts',
     fontsSrc: devFolder + 'fonts/**/*.*',
-    imageSrc: devFolder + 'images/**/*.*',
+    imageSrc: devFolder + 'img/**/*.*',
     scssStyles: [sassFolder + '**/*.scss'],
     scssFile: sassFolder + 'style.scss',
     cssStyles: cssFolder,
@@ -32,7 +32,7 @@ var build = {
     cssPath: buildPath + 'css',
     jsPath: buildPath + 'js',
     fontsPath: buildPath + 'fonts',
-    imagesPath: buildPath + 'images'
+    imagesPath: buildPath + 'img'
 };
 
 var server = {
